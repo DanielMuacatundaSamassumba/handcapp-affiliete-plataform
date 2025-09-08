@@ -1,0 +1,1 @@
+# handcapp-affiliete-plataform
