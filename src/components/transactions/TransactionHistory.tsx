@@ -1,0 +1,116 @@
+import React from 'react';
+import { ArrowUpRight, ArrowDownLeft, Calendar, DollarSign } from 'lucide-react';
+
+export default function TransactionHistory() {
+  const transactions = [
+    {
+      id: 1,
+      type: 'earning',
+      description: 'Comissão - Maria Santos',
+      amount: 'R$ 45,00',
+      date: '2024-01-18',
+      status: 'completed'
+    },
+    {
+      id: 2,
+      type: 'withdrawal',
+      description: 'Saque via PIX',
+      amount: 'R$ 500,00',
+      date: '2024-01-17',
+      status: 'pending'
+    },
+    {
+      id: 3,
+      type: 'earning',
+      description: 'Comissão - Carlos Silva',
+      amount: 'R$ 32,00',
+      date: '2024-01-16',
+      status: 'completed'
+    },
+    {
+      id: 4,
+      type: 'earning',
+      description: 'Comissão - Pedro Lima',
+      amount: 'R$ 67,50',
+      date: '2024-01-15',
+      status: 'completed'
+    },
+    {
+      id: 5,
+      type: 'earning',
+      description: 'Comissão - Sofia Oliveira',
+      amount: 'R$ 29,00',
+      date: '2024-01-14',
+      status: 'completed'
+    },
+    {
+      id: 6,
+      type: 'withdrawal',
+      description: 'Saque via TED',
+      amount: 'R$ 300,00',
+      date: '2024-01-12',
+      status: 'completed'
+    }
+  ];
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg border border-gray-100 xl:col-span-1">
+      <div className="p-6 border-b border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-900">Histórico de Transações</h2>
+        <p className="text-gray-600">Suas últimas atividades financeiras</p>
+      </div>
+      
+      <div className="p-6">
+        <div className="space-y-4">
+          {transactions.map((transaction) => (
+            <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+              <div className="flex items-center space-x-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  transaction.type === 'earning' 
+                    ? 'bg-green-100' 
+                    : 'bg-orange-100'
+                }`}>
+                  {transaction.type === 'earning' ? (
+                    <ArrowDownLeft className="w-5 h-5 text-green-600" />
+                  ) : (
+                    <ArrowUpRight className="w-5 h-5 text-orange-600" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">{transaction.description}</h3>
+                  <div className="flex items-center text-xs text-gray-500 mt-1">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    {new Date(transaction.date).toLocaleDateString('pt-BR')}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className={`font-semibold ${
+                  transaction.type === 'earning' ? 'text-green-600' : 'text-orange-600'
+                }`}>
+                  {transaction.type === 'earning' ? '+' : '-'}{transaction.amount}
+                </p>
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                  transaction.status === 'completed' 
+                    ? 'bg-green-100 text-green-800' 
+                    : transaction.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {transaction.status === 'completed' ? 'Concluído' : 
+                   transaction.status === 'pending' ? 'Pendente' : 'Falhou'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-6 text-center">
+          <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+            Ver histórico completo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
