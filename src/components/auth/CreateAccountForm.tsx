@@ -1,9 +1,9 @@
-import { LoginPropsType } from '@/app/apresentation/modules/auth/types/LoginTypeData'
+import { CreateAccountTypeProps } from '@/app/apresentation/modules/auth/types/AuthDataType'
 import { images } from '@/app/constatnts/images'
 import { Eye, EyeOff, Lock, Phone, User } from 'lucide-react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-export default function CreateAccountForm(props:LoginPropsType) {
+export default function CreateAccountForm(props:CreateAccountTypeProps) {
     const { formData , handleChangeEvent , handleSubmt} = props
       const [showPassword, setShowPassword] = useState(false);
   return (
@@ -47,7 +47,7 @@ export default function CreateAccountForm(props:LoginPropsType) {
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              name="nome"
+              name="name"
               value={formData?.name}
               required
               onChange={handleChangeEvent}
@@ -107,8 +107,8 @@ export default function CreateAccountForm(props:LoginPropsType) {
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type={showPassword ? 'text' : 'password'}
-              name="password"
-              value={formData?.password}
+              name="confPassword"
+              value={formData?.confPassword}
               onChange={ handleChangeEvent}
                required
               className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"

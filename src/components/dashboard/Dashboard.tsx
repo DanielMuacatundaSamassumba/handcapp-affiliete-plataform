@@ -20,7 +20,7 @@ interface DashboardProps {
   user: any;
 }
 
-export default function Dashboard({ user }: DashboardProps) {
+export default function Dashboard() {
   const [currentView, setCurrentView] = useState('dashboard');
 
   const availableBalance = 2847.50; // This would come from your backend
@@ -61,12 +61,12 @@ export default function Dashboard({ user }: DashboardProps) {
   ];
 
   const handleCopyReferralCode = () => {
-    navigator.clipboard.writeText(user.referralCode);
+
     // Aqui você poderia adicionar uma notificação de sucesso
   };
 
   const handleCopyReferralLink = () => {
-    const link = `https://exemplo.com/ref/${user.referralCode}`;
+    const link = `https://exemplo.com/ref/${"user.referralCode"}`;
     navigator.clipboard.writeText(link);
     // Aqui você poderia adicionar uma notificação de sucesso
   };
@@ -74,7 +74,7 @@ export default function Dashboard({ user }: DashboardProps) {
   if (currentView === 'withdrawals') {
     return (
       <WithdrawalPage 
-        user={user} 
+        user={""} 
         onBack={() => setCurrentView('dashboard')} 
       />
     );
@@ -88,11 +88,11 @@ export default function Dashboard({ user }: DashboardProps) {
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Bem-vindo de volta, {user.name}</p>
+              <p className="text-gray-600">Bem-vindo de volta, {"user.name"}</p>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-                onClick={() => setCurrentView('withdrawals')}
+              <button     onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+            
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>
@@ -142,7 +142,7 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={user.referralCode}
+                  value={"user.referralCode"}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />
@@ -161,7 +161,7 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={`https://exemplo.com/ref/${user.referralCode}`}
+                  value={`https://exemplo.com/ref/${"user.referralCode"}`}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />

@@ -1,12 +1,22 @@
 import CreateAccountForm from "@/components/auth/CreateAccountForm";
-
+import useCreateAccount from "../hook/useCreateAccount";
+import { Loader } from "@/components/Loader";
 
 export default function CreateAccountMainPage() {
+  const { formData, setFormData,
+    handleChangeValue,
+    handleSumbit,
+    loaderControl,
+ } = useCreateAccount()
   return (
     <div>
-         <CreateAccountForm formData={undefined} handleChangeEvent={function (event: React.ChangeEvent<HTMLInputElement>): void {
-              throw new Error("Function not implemented.");
-          } } handleSubmt={undefined}/>
+      <CreateAccountForm
+        formData={formData}
+        handleChangeEvent={handleChangeValue}
+        handleSubmt={handleSumbit} />
+         {
+           loaderControl && ( <Loader/>)
+         }
     </div>
   )
 }

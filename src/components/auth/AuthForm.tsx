@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Lock, Eye, EyeOff, Phone } from 'lucide-react';
 import { images } from '@/app/constatnts/images';
-import { LoginPropsType } from '@/app/apresentation/modules/auth/types/LoginTypeData';
+import { LoginPropsType } from '@/app/apresentation/modules/auth/types/AuthDataType';
 import { Loader } from '../Loader';
 import { Link } from 'react-router-dom';
 
