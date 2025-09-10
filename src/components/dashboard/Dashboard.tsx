@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from 'react';
 import { 
   DollarSign, 
@@ -8,13 +7,14 @@ import {
   Copy,
   Share2,
   CreditCard,
-  CheckCircle,
-  ArrowUpRight
+  ArrowUpRight,
+  Ticket
 } from 'lucide-react';
 import StatsCard from './StatsCard';
 import AffiliatesList from '../affiliates/AffiliatesList';
 import TransactionHistory from '../transactions/TransactionHistory';
 import WithdrawalPage from '../withdrawals/WithdrawalPage';
+import { decrypt } from '@/app/apresentation/modules/auth/utils/CryptoUtils';
 
 interface DashboardProps {
   user: any;
@@ -28,7 +28,15 @@ export default function Dashboard() {
   const stats = [
     {
       title: 'Total de Lucros',
-      value: 'R$ 2.847,50',
+      value: 'AO 2.847,50',
+      subtitle: 'Este mês',
+      icon: DollarSign,
+      color: 'text-green-600',
+      trend: { value: '12%', isPositive: true }
+    },
+    {
+      title: 'Total de Lucros Sacado',
+      value: 'AO 2.847,50',
       subtitle: 'Este mês',
       icon: DollarSign,
       color: 'text-green-600',
@@ -43,21 +51,14 @@ export default function Dashboard() {
       trend: { value: '8%', isPositive: true }
     },
     {
-      title: 'Taxa de Conversão',
-      value: '3.2%',
+      title: 'Total de Fichas',
+      value: '32',
       subtitle: 'Últimos 30 dias',
-      icon: TrendingUp,
+      icon: Ticket,
       color: 'text-purple-600',
       trend: { value: '0.5%', isPositive: true }
     },
-    {
-      title: 'Cliques no Link',
-      value: '1.234',
-      subtitle: 'Este mês',
-      icon: Eye,
-      color: 'text-orange-600',
-      trend: { value: '15%', isPositive: true }
-    }
+
   ];
 
   const handleCopyReferralCode = () => {
@@ -79,16 +80,16 @@ export default function Dashboard() {
       />
     );
   }
-
+  const encryptedData = localStorage.getItem("data_user") || ""
+  const data = JSON.parse(decrypt(encryptedData) )
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Bem-vindo de volta, {"user.name"}</p>
+              <p className="text-gray-600">Bem-vindo de volta, {data?.name   || ""}</p>
             </div>
             <div className="flex items-center space-x-4">
               <button     onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
@@ -142,7 +143,7 @@ export default function Dashboard() {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={"user.referralCode"}
+                  value={data.affiliate_code}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />
@@ -161,7 +162,7 @@ export default function Dashboard() {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={`https://exemplo.com/ref/${"user.referralCode"}`}
+                  value={`https://handicapp.co.ao/ref/${data.affiliate_code}`}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />

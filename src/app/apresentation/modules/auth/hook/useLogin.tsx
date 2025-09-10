@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { LoginTypeData } from '../types/AuthDataType'
 import { api } from '@/app/ infrastructure/api/api'
 import { Alert } from '@/components/utils/Alert'
-
+import { encrypt } from '../utils/CryptoUtils'
+import { useNavigate } from 'react-router-dom'
 export default function useLogin() {
+    const navegate = useNavigate()
     const [formData, setFormData] = useState<LoginTypeData>({
         phone: "",
         password: "",
@@ -35,12 +37,17 @@ export default function useLogin() {
                 phone: formData.password,
                 password: formData.password
             })
-            console.log(response)
+            const token = encrypt(response.data.token)
+            const data_user = encrypt(JSON.stringify(response.data.data))
+            localStorage.setItem("auth_token", token)
+            localStorage.setItem("data_user", data_user)
+
             Alert({
-                text:"",
-                title: `Seja Benvindo(a) ${ response.data.data.name}`,
+                text: "",
+                title: `Seja Benvindo(a) ${response.data.data.name}`,
                 icon: "success"
             })
+            navegate("/dashboard")
             setLoaderControl(false)
         } catch (error: any) {
             console.error(error)
