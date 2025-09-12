@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { 
-  DollarSign, 
-  Users, 
-  TrendingUp, 
+import {
+  DollarSign,
+  Users,
+  TrendingUp,
   Eye,
   Copy,
   Share2,
@@ -15,6 +15,8 @@ import AffiliatesList from '../affiliates/AffiliatesList';
 import TransactionHistory from '../transactions/TransactionHistory';
 import WithdrawalPage from '../withdrawals/WithdrawalPage';
 import { decrypt } from '@/app/apresentation/modules/auth/utils/CryptoUtils';
+import { images } from '@/app/constatnts/images';
+import AnchorTemporaryDrawer from '../Shared-Compoonents/MenuMobile';
 
 interface DashboardProps {
   user: any;
@@ -74,26 +76,47 @@ export default function Dashboard() {
 
   if (currentView === 'withdrawals') {
     return (
-      <WithdrawalPage 
-        user={""} 
-        onBack={() => setCurrentView('dashboard')} 
+      <WithdrawalPage
+        user={""}
+        onBack={() => setCurrentView('dashboard')}
       />
     );
   }
   const encryptedData = localStorage.getItem("data_user") || ""
-  const data = JSON.parse(decrypt(encryptedData) )
+  const data = JSON.parse(decrypt(encryptedData))
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Bem-vindo de volta, {data?.name   || ""}</p>
+            <div className='flex items-center space-x-4'>
+              <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-gray-600">Bem-vindo de volta, {data?.name || ""}</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <button     onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-            
+            <div className="flex items-center space-x-4 ">
+              <header className='hidden lg:block'>
+                <nav>
+                  <ul className='flex'>
+                    <li className=' text-zinc-700  cursor-pointer  text-[15px]  border-b-2 border-handcapp_color'>Perfil</li>
+
+
+                    <li className=' text-zinc-700  cursor-pointer  text-[15px] ml-2 '>Afiliados</li>
+                    <li className=' text-zinc-700  cursor-pointer text-[15px]  ml-2 '>Histórico de Transações</li>
+
+
+
+                  </ul>
+                </nav>
+              </header>
+
+              <div className='block lg:hidden'>
+                <AnchorTemporaryDrawer />
+              </div>
+              <button onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>
