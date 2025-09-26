@@ -34,7 +34,7 @@ export default function useLogin() {
         setLoaderControl(true)
         try {
             const response = await api.post("/auth/login", {
-                phone: formData.password,
+                phone: formData.phone,
                 password: formData.password
             })
             const token = encrypt(response.data.token)
@@ -57,6 +57,7 @@ export default function useLogin() {
                 title: error.response.data.message || "Erro ao Realizar o Login",
                 icon: "error"
             })
+             console.log(formData)
         }
     }
     return {

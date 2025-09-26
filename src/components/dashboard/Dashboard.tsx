@@ -14,23 +14,29 @@ import StatsCard from './StatsCard';
 import AffiliatesList from '../affiliates/AffiliatesList';
 import TransactionHistory from '../transactions/TransactionHistory';
 import WithdrawalPage from '../withdrawals/WithdrawalPage';
-import { decrypt } from '@/app/apresentation/modules/auth/utils/CryptoUtils';
 import { images } from '@/app/constatnts/images';
 import AnchorTemporaryDrawer from '../Shared-Compoonents/MenuMobile';
-
+import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
+import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
+import UserAuthenticated from '../Shared-Compoonents/UserAuthenticated';
 interface DashboardProps {
   user: any;
 }
 
 export default function Dashboard() {
+  const {data }  =UseListAffiliatedUsers()
   const [currentView, setCurrentView] = useState('dashboard');
-
+  const { myData}= useAuthMe()
   const availableBalance = 2847.50; // This would come from your backend
-
+  console.log(myData)
+  const formattedValue = new Intl.NumberFormat('pt-AO', {
+    style: 'currency',
+    currency: 'AOA'
+  }).format(myData?.point.value ?? 0);
   const stats = [
     {
       title: 'Total de Lucros',
-      value: 'AO 2.847,50',
+      value:`${formattedValue}`,
       subtitle: 'Este mês',
       icon: DollarSign,
       color: 'text-green-600',
@@ -38,7 +44,7 @@ export default function Dashboard() {
     },
     {
       title: 'Total de Lucros Sacado',
-      value: 'AO 2.847,50',
+      value:`${formattedValue ?? 0}`,
       subtitle: 'Este mês',
       icon: DollarSign,
       color: 'text-green-600',
@@ -46,7 +52,7 @@ export default function Dashboard() {
     },
     {
       title: 'Afiliados Ativos',
-      value: '127',
+      value:`${data?.length ?? 0}`,
       subtitle: 'Total de referidos',
       icon: Users,
       color: 'text-blue-600',
@@ -82,8 +88,7 @@ export default function Dashboard() {
       />
     );
   }
-  const encryptedData = localStorage.getItem("data_user") || ""
-  const data = JSON.parse(decrypt(encryptedData))
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
@@ -93,18 +98,17 @@ export default function Dashboard() {
               <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600">Bem-vindo de volta, {data?.name || ""}</p>
+                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4 ">
               <header className='hidden lg:block'>
                 <nav>
                   <ul className='flex'>
-                    <li className=' text-zinc-700  cursor-pointer  text-[15px]  border-b-2 border-handcapp_color'>Perfil</li>
 
 
-                    <li className=' text-zinc-700  cursor-pointer  text-[15px] ml-2 '>Afiliados</li>
-                    <li className=' text-zinc-700  cursor-pointer text-[15px]  ml-2 '>Histórico de Transações</li>
+                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Afiliados</li>
+                    <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
 
 
 
@@ -120,6 +124,8 @@ export default function Dashboard() {
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>
+              <UserAuthenticated/>
+              
             </div>
           </div>
         </div>
@@ -166,7 +172,7 @@ export default function Dashboard() {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={data.affiliate_code}
+                  value={myData?.affiliate_code || ""}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />
@@ -185,7 +191,7 @@ export default function Dashboard() {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={`https://handicapp.co.ao/ref/${data.affiliate_code}`}
+                  value={`https://handicapp.co.ao/ref/${myData?.affiliate_code || ""}`}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 />

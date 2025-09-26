@@ -43,7 +43,7 @@ export default function useCreateAccount() {
             return;
         }
         try {
-            const response = await api.post("/create/affiliate-account", formData)
+            const response = await api.post("/auth/register", formData)
             console.log(response)
             Alert({
                 text:"Conta Criada com sucesso!",

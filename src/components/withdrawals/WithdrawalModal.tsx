@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Building, Smartphone, AlertCircle, DollarSign } from 'lucide-react';
+import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
 
 interface WithdrawalModalProps {
   isOpen: boolean;
@@ -9,16 +10,18 @@ interface WithdrawalModalProps {
 }
 
 export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBalance }: WithdrawalModalProps) {
+  const { myData } = useAuthMe()
+  const formattedValue = new Intl.NumberFormat('pt-AO', {
+    style: 'currency',
+    currency: 'AOA'
+  }).format(myData?.point.value ?? 0);
   const [formData, setFormData] = useState({
     amount: '',
-    method: 'pix',
-    pixKey: '',
-    bankCode: '',
-    agency: '',
-    account: '',
-    accountType: 'corrente',
-    holderName: '',
-    holderDocument: ''
+    method: 'express',
+    nif: '',                     // Número de Identificação Fiscal (opcional)
+    iban: '',                    // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
+    phoneNumber: '',             // Número de telefone do titular
+    email: ''
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -27,39 +30,36 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev: any) => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = () => {
     const newErrors: any = {};
-    
+
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
       newErrors.amount = 'Valor deve ser maior que zero';
     }
-    
-    if (parseFloat(formData.amount) > availableBalance) {
+
+    if (parseFloat(formData.amount) > parseFloat(formattedValue)) {
       newErrors.amount = 'Valor não pode ser maior que o saldo disponível';
     }
-    
-    if (parseFloat(formData.amount) < 50) {
-      newErrors.amount = 'Valor mínimo para saque é R$ 50,00';
+
+    if (parseFloat(formData.amount) < 5000) {
+      newErrors.amount = 'Valor mínimo para saque é  5.000,00 kz';
     }
 
-    if (formData.method === 'pix' && !formData.pixKey) {
-      newErrors.pixKey = 'Chave PIX é obrigatória';
+    if (formData.method === 'express' && !formData.phoneNumber) {
+      newErrors.pixKey = 'Número de Telefone é obrigatório';
     }
 
-    if (formData.method === 'bank') {
-      if (!formData.bankCode) newErrors.bankCode = 'Código do banco é obrigatório';
-      if (!formData.agency) newErrors.agency = 'Agência é obrigatória';
-      if (!formData.account) newErrors.account = 'Conta é obrigatória';
-      if (!formData.holderName) newErrors.holderName = 'Nome do titular é obrigatório';
-      if (!formData.holderDocument) newErrors.holderDocument = 'CPF/CNPJ é obrigatório';
+    if (formData.method === 'transfer') {
+      if (!formData.iban) newErrors.bankCode = 'Iban do banco é obrigatório';
     }
 
     setErrors(newErrors);
@@ -68,7 +68,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       const withdrawalData = {
         ...formData,
@@ -77,21 +77,18 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
         status: 'pending',
         id: Math.random().toString(36).substr(2, 9)
       };
-      
+
       onSubmit(withdrawalData);
       onClose();
-      
+
       // Reset form
       setFormData({
         amount: '',
-        method: 'pix',
-        pixKey: '',
-        bankCode: '',
-        agency: '',
-        account: '',
-        accountType: 'corrente',
-        holderName: '',
-        holderDocument: ''
+        method: 'express',
+        nif: '',                     // Número de Identificação Fiscal (opcional)
+        iban: '',                    // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
+        phoneNumber: '',             // Número de telefone do titular
+        email: ''
       });
     }
   };
@@ -107,7 +104,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">Solicitar Saque</h2>
-                <p className="text-sm text-gray-600">Saldo disponível: R$ {availableBalance.toFixed(2)}</p>
+                <p className="text-sm text-gray-600">Saldo disponível: AO {formattedValue}</p>
               </div>
             </div>
             <button
@@ -126,7 +123,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
               Valor do Saque *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+              <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">AO</span>
               <input
                 type="number"
                 name="amount"
@@ -134,10 +131,9 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
                 onChange={handleChange}
                 step="0.01"
                 min="50"
-                max={availableBalance}
-                className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                  errors.amount ? 'border-red-300' : 'border-gray-300'
-                }`}
+                max={formattedValue}
+                className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${errors.amount ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 placeholder="0,00"
               />
             </div>
@@ -147,7 +143,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
                 {errors.amount}
               </p>
             )}
-            <p className="mt-1 text-xs text-gray-500">Valor mínimo: R$ 50,00</p>
+            <p className="mt-1 text-xs text-gray-500">Valor mínimo:  5.000,00 kz</p>
           </div>
 
           {/* Payment Method */}
@@ -158,180 +154,32 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => setFormData(prev => ({ ...prev, method: 'pix' }))}
-                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${
-                  formData.method === 'pix'
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                onClick={() => setFormData(prev => ({ ...prev, method: 'express' }))}
+                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'express'
+                  ? 'border-green-500 bg-green-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <Smartphone className="w-6 h-6 text-green-600" />
-                <span className="text-sm font-medium">PIX</span>
+                <span className="text-sm font-medium">Multicaixa Express</span>
                 <span className="text-xs text-gray-500">Instantâneo</span>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, method: 'bank' }))}
-                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${
-                  formData.method === 'bank'
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
+                  ? 'border-green-500 bg-green-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <Building className="w-6 h-6 text-blue-600" />
-                <span className="text-sm font-medium">TED</span>
+                <span className="text-sm font-medium">Transferência Bancária</span>
                 <span className="text-xs text-gray-500">1-2 dias úteis</span>
               </button>
             </div>
           </div>
 
           {/* PIX Fields */}
-          {formData.method === 'pix' && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Chave PIX *
-              </label>
-              <input
-                type="text"
-                name="pixKey"
-                value={formData.pixKey}
-                onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                  errors.pixKey ? 'border-red-300' : 'border-gray-300'
-                }`}
-                placeholder="CPF, e-mail, telefone ou chave aleatória"
-              />
-              {errors.pixKey && (
-                <p className="mt-1 text-sm text-red-600 flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-1" />
-                  {errors.pixKey}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Bank Fields */}
-          {formData.method === 'bank' && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Código do Banco *
-                  </label>
-                  <input
-                    type="text"
-                    name="bankCode"
-                    value={formData.bankCode}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                      errors.bankCode ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="001"
-                  />
-                  {errors.bankCode && (
-                    <p className="mt-1 text-xs text-red-600">{errors.bankCode}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Agência *
-                  </label>
-                  <input
-                    type="text"
-                    name="agency"
-                    value={formData.agency}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                      errors.agency ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="1234"
-                  />
-                  {errors.agency && (
-                    <p className="mt-1 text-xs text-red-600">{errors.agency}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Conta *
-                  </label>
-                  <input
-                    type="text"
-                    name="account"
-                    value={formData.account}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                      errors.account ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="12345-6"
-                  />
-                  {errors.account && (
-                    <p className="mt-1 text-xs text-red-600">{errors.account}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo de Conta *
-                  </label>
-                  <select
-                    name="accountType"
-                    value={formData.accountType}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  >
-                    <option value="corrente">Corrente</option>
-                    <option value="poupanca">Poupança</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome do Titular *
-                </label>
-                <input
-                  type="text"
-                  name="holderName"
-                  value={formData.holderName}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                    errors.holderName ? 'border-red-300' : 'border-gray-300'
-                  }`}
-                  placeholder="Nome completo do titular"
-                />
-                {errors.holderName && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.holderName}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  CPF/CNPJ do Titular *
-                </label>
-                <input
-                  type="text"
-                  name="holderDocument"
-                  value={formData.holderDocument}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                    errors.holderDocument ? 'border-red-300' : 'border-gray-300'
-                  }`}
-                  placeholder="000.000.000-00"
-                />
-                {errors.holderDocument && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.holderDocument}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Info Box */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -340,14 +188,15 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
               <div className="text-sm text-blue-800">
                 <p className="font-medium mb-1">Informações importantes:</p>
                 <ul className="space-y-1 text-xs">
-                  <li>• PIX: Processamento instantâneo, sem taxas</li>
-                  <li>• TED: Processamento em 1-2 dias úteis, taxa de R$ 5,00</li>
-                  <li>• Valor mínimo para saque: R$ 50,00</li>
-                  <li>• Saques são processados de segunda a sexta</li>
+                  <li>• Multicaixa Express : Processamento instantâneo</li>
+                  <li>• Transferência bancária (BAI, BFA, BPC): Processamento em 1-2 dias úteis </li>
+                  <li>• Valor mínimo para saque: 5.000 Kz</li>
+                  <li>• Saques são processados de segunda a sexta-feira</li>
                 </ul>
               </div>
             </div>
           </div>
+
 
           {/* Buttons */}
           <div className="flex space-x-3 pt-4">

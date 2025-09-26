@@ -4,8 +4,10 @@ import CreateAccountMainPage from '@/app/apresentation/modules/auth/pages/Create
 import DashboardMainPage from '@/app/apresentation/modules/dashboard/pages/DashboardMainPage'
 import AuthCheck from '@/middleware/AuthCheck'
 import { PublicRoutes } from '@/middleware/PublicRoutes'
+import ProfileMainPage from '@/app/apresentation/modules/profile/pages/ProfileMainPage'
 export default function Routes() {
      const DashboardMainPAgeAuth = AuthCheck(DashboardMainPage)
+     const ProfileMainPageAuth = AuthCheck(ProfileMainPage)
      const routes = createBrowserRouter([
           {
                path: "/",
@@ -26,6 +28,10 @@ export default function Routes() {
           {
                path: "dashboard",
                element: <DashboardMainPAgeAuth />
+          },
+          {
+               path: "profile",
+               element: <ProfileMainPageAuth />
           }
      ])
      return {
