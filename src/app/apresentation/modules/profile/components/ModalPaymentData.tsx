@@ -26,6 +26,7 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                             <div className='mt-5'>
                                 <label htmlFor="">Selecione  metódo de Pagamento</label>
                                 <select
+                                required
                                     name='payment_method_id'
                                     value={formData.payment_method_id}
                                     onChange={handleOnchageValue}
@@ -33,9 +34,8 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                                     <option value="">Selecione </option>
                                     {
                                         Array.isArray(paymentData) && paymentData?.map((item) => (
-                                            item.short_name != PaymentDataEnum.MCX_QR_CODE ? (
+                                       
                                                 <option value={item.id} key={item.id}>{item.name} </option>
-                                            ) : ""
                                         ))
                                     }
                                 </select>
@@ -43,6 +43,7 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                             <div className='mt- flex  flex-col'>
                                 <label htmlFor="">Referência</label>
                                 <input
+                                required
                                     type="text"
                                     placeholder='Referência'
                                     value={formData.reference}

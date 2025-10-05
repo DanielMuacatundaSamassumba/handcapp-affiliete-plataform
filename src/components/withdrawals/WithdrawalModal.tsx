@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Building, Smartphone, AlertCircle, DollarSign } from 'lucide-react';
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
+import useListMyPaymentData from '@/app/apresentation/modules/profile/services/useListMyPaymentData';
+import { PaymentDataEnum } from '@/app/apresentation/modules/profile/types/PaymentDataType';
 
 interface WithdrawalModalProps {
   isOpen: boolean;
@@ -11,6 +13,8 @@ interface WithdrawalModalProps {
 
 export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBalance }: WithdrawalModalProps) {
   const { myData } = useAuthMe()
+  const { myPaymentData } = useListMyPaymentData()
+
   const formattedValue = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA'
@@ -46,8 +50,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
       newErrors.amount = 'Valor deve ser maior que zero';
     }
 
-    if (parseFloat(formData.amount) > parseFloat(formattedValue)) {
-      newErrors.amount = 'Valor não pode ser maior que o saldo disponível';
+if (parseFloat(formData.amount) > Number(myData?.point?.value )) {      newErrors.amount = 'Valor não pode ser maior que o saldo disponível';
     }
 
     if (parseFloat(formData.amount) < 5000) {
@@ -92,7 +95,6 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
       });
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -151,34 +153,59 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Método de Pagamento *
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, method: 'express' }))}
-                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'express'
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-gray-300'
-                  }`}
-              >
-                <Smartphone className="w-6 h-6 text-green-600" />
-                <span className="text-sm font-medium">Multicaixa Express</span>
-                <span className="text-xs text-gray-500">Instantâneo</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, method: 'bank' }))}
-                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-gray-300'
-                  }`}
-              >
-                <Building className="w-6 h-6 text-blue-600" />
-                <span className="text-sm font-medium">Transferência Bancária</span>
-                <span className="text-xs text-gray-500">1-2 dias úteis</span>
-              </button>
-            </div>
-          </div>
+            <div className="flex justify-between w-full">
+              {
+                myPaymentData?.map(item => (
+                  <div key={item.id}>
+                    {
+                      item.payment_method.short_name == PaymentDataEnum.MCX ?
+                        <button
 
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, method: 'express' }))}
+                          className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'express'
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                        >
+                          <Smartphone className="w-6 h-6 text-green-600" />
+                          <span className="text-sm font-medium">Multicaixa Express</span>
+                          <span className="text-xs text-gray-500">Instantâneo</span>
+                        </button>
+                        : ""
+                    }
+                  </div>
+                ))
+              }
+              {
+                myPaymentData?.map(item => (
+                  <div key={item.id}>
+                    {
+                       item.payment_method.short_name == PaymentDataEnum.TRANSFER ?
+                        <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, method: 'bank' }))}
+                      className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
+                        ? 'border-green-500 bg-green-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                    >
+                      <Building className="w-6 h-6 text-blue-600" />
+                      <span className="text-sm font-medium">Transferência Bancária</span>
+                      <span className="text-xs text-gray-500">1-2 dias úteis</span>
+                    </button>:""
+                    }
+                  </div>
+                ))
+              }
+            </div>
+               {
+       myPaymentData?.length == 0 ?
+       <p className='text-xs text-center text-zinc-400'>Adicione Dados Bancários</p>
+       :""
+     }
+          </div>
+  
           {/* PIX Fields */}
 
           {/* Info Box */}

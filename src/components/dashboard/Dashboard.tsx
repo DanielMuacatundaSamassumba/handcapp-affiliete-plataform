@@ -51,7 +51,7 @@ export default function Dashboard() {
       trend: { value: '12%', isPositive: true }
     },
     {
-      title: 'Afiliados Ativos',
+      title: 'Referidos Ativos',
       value:`${data?.length ?? 0}`,
       subtitle: 'Total de referidos',
       icon: Users,
@@ -80,14 +80,17 @@ export default function Dashboard() {
     // Aqui você poderia adicionar uma notificação de sucesso
   };
 
-  if (currentView === 'withdrawals') {
-    return (
+if (currentView === 'withdrawals') {
+  return (
+    myData && (
       <WithdrawalPage
-        user={""}
+        user={myData}
         onBack={() => setCurrentView('dashboard')}
       />
-    );
-  }
+    )
+  );
+}
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,13 +108,8 @@ export default function Dashboard() {
               <header className='hidden lg:block'>
                 <nav>
                   <ul className='flex'>
-
-
-                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Afiliados</li>
+                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Referidos</li>
                     <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
-
-
-
                   </ul>
                 </nav>
               </header>
@@ -120,7 +118,6 @@ export default function Dashboard() {
                 <AnchorTemporaryDrawer />
               </div>
               <button onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>

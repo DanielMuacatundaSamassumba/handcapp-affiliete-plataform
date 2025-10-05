@@ -7,7 +7,7 @@ export default function AffiliatesList() {
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 xl:col-span-1">
       <div className="p-6 border-b border-gray-100">
-        <h2 className="text-xl font-semibold text-gray-900">Seus Afiliados</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Seus Referidos</h2>
         <p className="text-gray-600">Lista dos usuários que se cadastraram através do seu link</p>
       </div>
       

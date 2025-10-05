@@ -10,6 +10,7 @@ export default function useListPaymentData() {
         try {
             const response = await api.get("/payment-type/list", headersConfig())
             setPaymentData(response.data.data)
+            console.log(response)
     
         } catch (error) {
             console.error(error)

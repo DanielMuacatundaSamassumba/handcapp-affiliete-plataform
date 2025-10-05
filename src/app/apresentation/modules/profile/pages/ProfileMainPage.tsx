@@ -21,18 +21,23 @@ import { Loader } from '@/components/Loader';
 import ModalPaymentData from '../components/ModalPaymentData';
 import useListPaymentData from '@/app/apresentation/hooks/useListPaymentData';
 import useListMyPaymentData from '../services/useListMyPaymentData';
+import { PaymentDataEnum } from '../types/PaymentDataType';
+import ModalPaymentDataUpdate from '../components/ModalPaymentDataUpdate';
 interface DashboardProps {
   user: any;
 }
 
 export default function ProfileMainPage() {
-  const [ openAddModal, setOpenAddModal] = useState(false)
+  const [openAddModal, setOpenAddModal] = useState(false)
   const { data } = UseListAffiliatedUsers()
   const [currentView, setCurrentView] = useState('dashboard');
   const { myData, loaderControl } = useAuthMe()
-  const {myPaymentData } = useListMyPaymentData()
+  const { myPaymentData } = useListMyPaymentData()
+  const [reference, setReference] = useState("")
+  const [PaymentDataId, setPaymentDataId] = useState("")
+  const [UpdateOpenModal, setUpdateOpenModal] = useState(false)
+  const [Id, setId] = useState("")
   const availableBalance = 2847.50; // This would come from your backend
-  console.log(myData)
   const formattedValue = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA'
@@ -85,13 +90,18 @@ export default function ProfileMainPage() {
   };
 
   if (currentView === 'withdrawals') {
-    return (
-      <WithdrawalPage
-        user={""}
-        onBack={() => setCurrentView('dashboard')}
-      />
-    );
-  }
+  return (
+    <>
+      {myData && (
+        <WithdrawalPage
+          user={myData}
+          onBack={() => setCurrentView('dashboard')}
+        />
+      )}
+    </>
+  );
+}
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -111,7 +121,7 @@ export default function ProfileMainPage() {
                   <ul className='flex'>
 
 
-                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Afiliados</li>
+                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Referidos</li>
                     <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
 
 
@@ -157,38 +167,88 @@ export default function ProfileMainPage() {
             <p className='text-zinc-400'>{myData?.email ? myData?.email : "N/A"}</p>
 
           </div>
-          <div className=' flex justify-between border-b border-zinc-300 p-4 '>
-            <p className='text-zinc-400'>Nome</p>
-            <p className='text-zinc-400'>{myData?.name}</p>
 
-          </div>
 
           <div className='mt-4 flex justify-end'>
             <button className='bg-handcapp_color text-white rounded p-2'>Alterar Dados</button>
           </div>
         </div>
         <div className=' bg-white p-5 mt-2 shadow-md  w-11/12 md:w-6/12 lg:w-1/3'>
-         <div className='flex justify-between items-center'>
-         <p className='text-2xl  font-bold text-zinc-500 '>Dados Bancários</p>
-           <button className='text-white bg-handcapp_color p-2 rounded' onClick={()=>setOpenAddModal(!openAddModal)}>Adicionar</button>
-         </div>
+          <div className='flex justify-between items-center'>
+            <p className='text-2xl  font-bold text-zinc-500 '>Dados Bancários</p>
+            <button className='text-white bg-handcapp_color p-2 rounded' onClick={() => setOpenAddModal(!openAddModal)}>Adicionar</button>
+          </div>
           <span className='border block border-dashed mt-3 '></span>
           <div className='flex justify-between items-center'>
             <div>
-              <p className='text-zinc-400 text-xl mt-2  font-semibold'>IBAN</p>
-              <p className='text-zinc-400 text-xl mt-2'>AO0066 0002 0123 1234 5678 9015 4</p>
+              {
+                myPaymentData && myPaymentData.map(item => (
+                  <div key={item.id}>
+                    {
+                      item.payment_method.short_name != PaymentDataEnum.MCX ?
+                        <div>
+                          <p className='text-zinc-400 text-xl mt-2  font-semibold'>IBAN</p>
+                          <div className='flex items-center'>
+                            <p className='text-zinc-400 text-xl mt-2'>{item.reference}</p>
+                            <Pencil className='w-20 text-zinc-400 cursor-pointer'
+                              onClick={() => {
+                                setUpdateOpenModal(true)
+                                setId(item.id)
+                                setReference(item.reference)
+                                setPaymentDataId(item.payment_method.id)
+                              }}
+                            />
+                          </div>
+                        </div>
+                        : ""
+                    }
+                  </div>
+                ))
+              }
             </div>
-            <Pencil className='w-20 text-zinc-400 cursor-pointer' />
+
           </div>
           <div className='flex justify-between items-center'>
             <div>
-              <p className='text-zinc-400 text-xl mt-2 font-semibold'>Express</p>
-              <p className='text-zinc-400 text-xl mt-2'>+244 951051700</p>
+              {
+                myPaymentData && myPaymentData.map(item => (
+                  <div key={item.id}>
+                    {
+                      item.payment_method.short_name != PaymentDataEnum.TRANSFER ?
+                        <div >
+                          <p className='text-zinc-400 text-xl mt-2 font-semibold'>Express</p>
+                          <div className='flex items-center'>
+                            <p className='text-zinc-400 text-xl mt-2'>{item.reference}</p>
+                            <Pencil className='w-20 text-zinc-400 cursor-pointer'
+                              onClick={() => {
+                              
+                                setId(item.id)
+                                setReference(item.reference)
+                                setPaymentDataId(item.payment_method.id),
+                                  setUpdateOpenModal(true)
+                              }}
+                            />
+                          </div>
+                        </div>
+                        : ""
+                    }
+                  </div>
+                ))
+              }
+
             </div>
-            <Pencil className='w-20 text-zinc-400 cursor-pointer' />
+
           </div>
         </div>
-        <ModalPaymentData  open={openAddModal} setOpen={setOpenAddModal}/>
+        <ModalPaymentData open={openAddModal} setOpen={setOpenAddModal} />
+
+        <ModalPaymentDataUpdate
+          open={UpdateOpenModal}
+          setOpen={setUpdateOpenModal}
+          payment_data_id={PaymentDataId}
+          reference={reference}
+          id={Id}
+        />
       </div>
       {loaderControl && <Loader />}
     </div>

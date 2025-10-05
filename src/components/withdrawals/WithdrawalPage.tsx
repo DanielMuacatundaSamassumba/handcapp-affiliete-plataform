@@ -2,24 +2,17 @@ import React, { useState } from 'react';
 import { ArrowLeft, DollarSign, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
 import WithdrawalModal from './WithdrawalModal';
 import WithdrawalsList from './WithdrawalsList';
+import { UserData } from '@/app/apresentation/modules/dashboard/types/userType';
 
 interface WithdrawalPageProps {
-  user: any;
+  user: UserData;
   onBack: () => void;
 }
 
 export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const [withdrawals, setWithdrawals] = useState([
-    {
-      id: '1',
-      amount: 500.00,
-      method: 'pix',
-      status: 'completed' as const,
-      requestDate: '2024-01-17T10:00:00Z',
-      processedDate: '2024-01-17T14:30:00Z',
-      pixKey: 'joao@example.com'
-    },
+
     {
       id: '2',
       amount: 300.00,
@@ -104,8 +97,9 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Saldo Disponível</p>
-                <p className="text-3xl font-bold text-green-600">R$ {availableBalance.toFixed(2)}</p>
-                <p className="text-gray-500 text-sm">Disponível para saque</p>
+                <p className="text-3xl font-bold text-green-600">
+                   { user.point.value} Kz
+                </p>                <p className="text-gray-500 text-sm">Disponível para saque</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-green-600" />
@@ -117,7 +111,9 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Saques Pendentes</p>
-                <p className="text-3xl font-bold text-yellow-600">R$ {pendingAmount.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-yellow-600"> {
+                   user.point.value
+                  } Kz</p>
                 <p className="text-gray-500 text-sm">Em processamento</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -130,7 +126,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Total Sacado</p>
-                <p className="text-3xl font-bold text-blue-600">R$ 1.250,00</p>
+                <p className="text-3xl font-bold text-blue-600">{user.point.value} Kz</p>
                 <p className="text-gray-500 text-sm">Este mês</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -141,42 +137,45 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
         </div>
 
         {/* Important Information */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-          <div className="flex items-start space-x-4">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mt-1">
-              <AlertCircle className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-blue-900 font-semibold text-lg mb-2">Informações Importantes sobre Saques</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-800">
-                <div>
-                  <h4 className="font-medium mb-2">PIX (Recomendado)</h4>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Processamento instantâneo</li>
-                    <li>• Sem taxas adicionais</li>
-                    <li>• Disponível 24/7</li>
-                    <li>• Valor mínimo: R$ 50,00</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-2">TED Bancária</h4>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Processamento em 1-2 dias úteis</li>
-                    <li>• Taxa de R$ 5,00</li>
-                    <li>• Horário comercial</li>
-                    <li>• Valor mínimo: R$ 50,00</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-4 p-4 bg-blue-100 rounded-lg">
-                <p className="text-blue-900 text-sm">
-                  <strong>Horários de processamento:</strong> Saques são processados de segunda a sexta-feira, das 9h às 18h. 
-                  Solicitações feitas fora deste horário serão processadas no próximo dia útil.
-                </p>
-              </div>
-            </div>
-          </div>
+<div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+  <div className="flex items-start space-x-4">
+    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+      <AlertCircle className="w-5 h-5 text-blue-600" />
+    </div>
+    <div>
+      <h3 className="text-blue-900 font-semibold text-lg mb-2">
+        Informações Importantes sobre Levantamentos
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-800">
+        <div>
+          <h4 className="font-medium mb-2">Multicaixa Express (Recomendado)</h4>
+          <ul className="space-y-1 text-sm">
+            <li>• Processamento quase instantâneo</li>
+            <li>• Sem taxas adicionais</li>
+            <li>• Disponível 24h por dia, 7 dias por semana</li>
+            <li>• Valor mínimo: 5.000 Kz</li>
+          </ul>
         </div>
+        <div>
+          <h4 className="font-medium mb-2">Transferência Bancária (via IBAN)</h4>
+          <ul className="space-y-1 text-sm">
+            <li>• Processamento em 1 a 2 dias úteis</li>
+            <li>• Pode haver taxa de transferência conforme o banco</li>
+            <li>• Disponível apenas em horário bancário</li>
+            <li>• Valor mínimo: 5.000 Kz</li>
+          </ul>
+        </div>
+      </div>
+      <div className="mt-4 p-4 bg-blue-100 rounded-lg">
+        <p className="text-blue-900 text-sm">
+          <strong>Horários de processamento:</strong> Levantamentos são processados de segunda a sexta-feira, das 8h às 17h.
+          Solicitações feitas fora deste horário serão processadas no próximo dia útil.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
         {/* Withdrawals List */}
         <WithdrawalsList withdrawals={withdrawals} />

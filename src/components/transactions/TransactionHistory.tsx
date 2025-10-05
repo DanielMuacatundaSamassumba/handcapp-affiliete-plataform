@@ -4,53 +4,14 @@ import { ArrowUpRight, ArrowDownLeft, Calendar, DollarSign } from 'lucide-react'
 export default function TransactionHistory() {
   const transactions = [
     {
-      id: 1,
-      type: 'earning',
-      description: 'Comissão - Maria Santos',
-      amount: 'R$ 45,00',
-      date: '2024-01-18',
-      status: 'completed'
+      id: "",
+      type: '',
+      description: '',
+      amount: '',
+      date: '',
+      status: ''
     },
-    {
-      id: 2,
-      type: 'withdrawal',
-      description: 'Saque via PIX',
-      amount: 'R$ 500,00',
-      date: '2024-01-17',
-      status: 'pending'
-    },
-    {
-      id: 3,
-      type: 'earning',
-      description: 'Comissão - Carlos Silva',
-      amount: 'R$ 32,00',
-      date: '2024-01-16',
-      status: 'completed'
-    },
-    {
-      id: 4,
-      type: 'earning',
-      description: 'Comissão - Pedro Lima',
-      amount: 'R$ 67,50',
-      date: '2024-01-15',
-      status: 'completed'
-    },
-    {
-      id: 5,
-      type: 'earning',
-      description: 'Comissão - Sofia Oliveira',
-      amount: 'R$ 29,00',
-      date: '2024-01-14',
-      status: 'completed'
-    },
-    {
-      id: 6,
-      type: 'withdrawal',
-      description: 'Saque via TED',
-      amount: 'R$ 300,00',
-      date: '2024-01-12',
-      status: 'completed'
-    }
+   
   ];
 
   return (

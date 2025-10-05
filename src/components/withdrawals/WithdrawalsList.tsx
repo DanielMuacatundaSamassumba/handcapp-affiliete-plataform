@@ -79,7 +79,7 @@ export default function WithdrawalsList({ withdrawals }: WithdrawalsListProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {withdrawals.map((withdrawal) => (
+            {/*withdrawals.map((withdrawal) => (
               <div key={withdrawal.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -129,7 +129,7 @@ export default function WithdrawalsList({ withdrawals }: WithdrawalsListProps) {
                   </div>
                 </div>
               </div>
-            ))}
+            ))*/}
           </div>
         )}
       </div>
