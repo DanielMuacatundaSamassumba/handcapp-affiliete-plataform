@@ -1,5 +1,5 @@
 import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { DivideIcon as  LucideIcon } from 'lucide-react';
 
 interface StatsCardProps {
   title: string;
@@ -19,7 +19,7 @@ export default function StatsCard({ title, value, subtitle, icon: Icon, color, t
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-gray-600 text-sm font-medium mb-1">{title}</p>
-          <p className={`text-3xl font-bold ${color} mb-1`}>{value}</p>
+          <p className={`text-3xl font-bold  text-[19px] ${color} mb-1`}>{value}</p>
           <p className="text-gray-500 text-sm">{subtitle}</p>
           {trend && (
             <div className={`flex items-center mt-2 ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>

@@ -3,7 +3,10 @@ import { X, CreditCard, Building, Smartphone, AlertCircle, DollarSign } from 'lu
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
 import useListMyPaymentData from '@/app/apresentation/modules/profile/services/useListMyPaymentData';
 import { PaymentDataEnum } from '@/app/apresentation/modules/profile/types/PaymentDataType';
-
+import { Link } from "react-router-dom"
+import Swal from 'sweetalert2';
+import { api } from '@/app/ infrastructure/api/api';
+import { headersConfig } from '@/app/utils/HeaderConfig';
 interface WithdrawalModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,18 +17,16 @@ interface WithdrawalModalProps {
 export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBalance }: WithdrawalModalProps) {
   const { myData } = useAuthMe()
   const { myPaymentData } = useListMyPaymentData()
-
+  const [loaderControl, setLoaderControl] = useState(false)
   const formattedValue = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA'
   }).format(myData?.point.value ?? 0);
   const [formData, setFormData] = useState({
     amount: '',
-    method: 'express',
-    nif: '',                     // Número de Identificação Fiscal (opcional)
-    iban: '',                    // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
-    phoneNumber: '',             // Número de telefone do titular
-    email: ''
+    method: '',
+    payment_method_id: "",                             // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
+    payment_data_id: ""
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -50,49 +51,76 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
       newErrors.amount = 'Valor deve ser maior que zero';
     }
 
-if (parseFloat(formData.amount) > Number(myData?.point?.value )) {      newErrors.amount = 'Valor não pode ser maior que o saldo disponível';
+    if (parseFloat(formData.amount) > Number(myData?.point?.value)) {
+      newErrors.amount = 'Valor não pode ser maior que o saldo disponível';
     }
 
     if (parseFloat(formData.amount) < 5000) {
       newErrors.amount = 'Valor mínimo para saque é  5.000,00 kz';
     }
 
-    if (formData.method === 'express' && !formData.phoneNumber) {
+    /*if (formData.method === 'express' && !formData.reference) {
       newErrors.pixKey = 'Número de Telefone é obrigatório';
     }
 
-    if (formData.method === 'transfer') {
-      if (!formData.iban) newErrors.bankCode = 'Iban do banco é obrigatório';
-    }
+    /*if (formData.method === 'transfer') {
+      if (!formData.reference) newErrors.bankCode = 'Iban do banco é obrigatório';
+    }*/
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (formData.method.length == 0 && !formData.amount) {
+      Swal.fire({
+        title: "Erro de Validação ",
+        text: "Selecione O metodo de Pagamento",
+        icon: "warning",
+        customClass: {
+          container: "swal2-container "
+        }
+      })
+    }
     if (validateForm()) {
       const withdrawalData = {
         ...formData,
         amount: parseFloat(formData.amount),
-        requestDate: new Date().toISOString(),
-        status: 'pending',
-        id: Math.random().toString(36).substr(2, 9)
+
       };
+      try {
+        setLoaderControl(true)
+        const response = await api.post("affiliate/payment-request/store", formData, headersConfig())
+        console.log(response)
+        Swal.fire({
+          title: "Erro de Validação ",
+          text: "Solicitação de Pagamento realizado com sucesso!",
+          icon: "success",
+          customClass: {
+            container: "swal2-container "
+          }
+        }).then((res) => {
+          if (res.isConfirmed) {
+            window.location.reload()
+          }
+        })
+        setLoaderControl(false)
+      } catch (error: any) {
+        Swal.fire({
+          title: "Erro de Validação ",
+          text: error.response.data.message || "Erro ao Solicitar Pagamento",
+          icon: "error",
+          customClass: {
+            container: "swal2-container "
+          }
+        })
+        console.error(error)
+      }
 
-      onSubmit(withdrawalData);
-      onClose();
 
-      // Reset form
-      setFormData({
-        amount: '',
-        method: 'express',
-        nif: '',                     // Número de Identificação Fiscal (opcional)
-        iban: '',                    // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
-        phoneNumber: '',             // Número de telefone do titular
-        email: ''
-      });
+
     }
   };
   return (
@@ -162,7 +190,7 @@ if (parseFloat(formData.amount) > Number(myData?.point?.value )) {      newError
                         <button
 
                           type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, method: 'express' }))}
+                          onClick={() => setFormData(prev => ({ ...prev, payment_method_id: item.payment_method.id, payment_data_id: item.id, method: "express" }))}
                           className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'express'
                             ? 'border-green-500 bg-green-50'
                             : 'border-gray-200 hover:border-gray-300'
@@ -181,31 +209,31 @@ if (parseFloat(formData.amount) > Number(myData?.point?.value )) {      newError
                 myPaymentData?.map(item => (
                   <div key={item.id}>
                     {
-                       item.payment_method.short_name == PaymentDataEnum.TRANSFER ?
+                      item.payment_method.short_name == PaymentDataEnum.TRANSFER ?
                         <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, method: 'bank' }))}
-                      className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                    >
-                      <Building className="w-6 h-6 text-blue-600" />
-                      <span className="text-sm font-medium">Transferência Bancária</span>
-                      <span className="text-xs text-gray-500">1-2 dias úteis</span>
-                    </button>:""
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, payment_method_id: item.payment_method.id, payment_data_id: item.id, method: "bank" }))}
+                          className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                        >
+                          <Building className="w-6 h-6 text-blue-600" />
+                          <span className="text-sm font-medium">Transferência Bancária</span>
+                          <span className="text-xs text-gray-500">1-2 dias úteis</span>
+                        </button> : ""
                     }
                   </div>
                 ))
               }
             </div>
-               {
-       myPaymentData?.length == 0 ?
-       <p className='text-xs text-center text-zinc-400'>Adicione Dados Bancários</p>
-       :""
-     }
+            {
+              myPaymentData?.length == 0 ?
+                <Link to={"/profile"}>  <p className='text-xs text-center text-blue-400'>Adicionar Dados Bancários</p></Link>
+                : ""
+            }
           </div>
-  
+
           {/* PIX Fields */}
 
           {/* Info Box */}
@@ -243,6 +271,7 @@ if (parseFloat(formData.amount) > Number(myData?.point?.value )) {      newError
           </div>
         </form>
       </div>
+
     </div>
   );
 }

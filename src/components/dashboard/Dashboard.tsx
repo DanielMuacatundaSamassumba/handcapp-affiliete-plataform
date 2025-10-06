@@ -37,10 +37,10 @@ export default function Dashboard() {
     {
       title: 'Total de Lucros',
       value:`${formattedValue}`,
-      subtitle: 'Este mês',
+      subtitle: '-',
       icon: DollarSign,
       color: 'text-green-600',
-      trend: { value: '12%', isPositive: true }
+      trend: { value: '', isPositive: true }
     },
     {
       title: 'Total de Lucros Sacado',

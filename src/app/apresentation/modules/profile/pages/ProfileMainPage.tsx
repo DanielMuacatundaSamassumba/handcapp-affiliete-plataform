@@ -9,7 +9,8 @@ import {
   CreditCard,
   ArrowUpRight,
   Ticket,
-  Pencil
+  Pencil,
+  ArrowLeft
 } from 'lucide-react';
 import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
@@ -23,6 +24,7 @@ import useListPaymentData from '@/app/apresentation/hooks/useListPaymentData';
 import useListMyPaymentData from '../services/useListMyPaymentData';
 import { PaymentDataEnum } from '../types/PaymentDataType';
 import ModalPaymentDataUpdate from '../components/ModalPaymentDataUpdate';
+import { useNavigate } from 'react-router-dom';
 interface DashboardProps {
   user: any;
 }
@@ -102,7 +104,7 @@ export default function ProfileMainPage() {
   );
 }
 
-
+  const navegate = useNavigate()
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">
@@ -111,7 +113,10 @@ export default function ProfileMainPage() {
             <div className='flex items-center space-x-4'>
               <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
+               <div className='flex items-center'>
+                <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={()=>navegate(-1)}/>
+               <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
+               </div>
                 <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
               </div>
             </div>

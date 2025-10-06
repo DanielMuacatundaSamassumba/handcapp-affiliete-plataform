@@ -5,9 +5,11 @@ import DashboardMainPage from '@/app/apresentation/modules/dashboard/pages/Dashb
 import AuthCheck from '@/middleware/AuthCheck'
 import { PublicRoutes } from '@/middleware/PublicRoutes'
 import ProfileMainPage from '@/app/apresentation/modules/profile/pages/ProfileMainPage'
+import TransationResume from '@/app/apresentation/modules/transation/pages/TransationResume'
 export default function Routes() {
      const DashboardMainPAgeAuth = AuthCheck(DashboardMainPage)
      const ProfileMainPageAuth = AuthCheck(ProfileMainPage)
+     const TransationResumePageAuth = AuthCheck(TransationResume)
      const routes = createBrowserRouter([
           {
                path: "/",
@@ -32,6 +34,10 @@ export default function Routes() {
           {
                path: "profile",
                element: <ProfileMainPageAuth />
+          },
+          {
+               path: "transation-resume",
+               element: <TransationResumePageAuth />
           }
      ])
      return {
