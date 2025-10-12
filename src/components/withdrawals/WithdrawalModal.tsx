@@ -95,7 +95,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
         const response = await api.post("affiliate/payment-request/store", formData, headersConfig())
         console.log(response)
         Swal.fire({
-          title: "Erro de Validação ",
+          title: "Sucesso  ",
           text: "Solicitação de Pagamento realizado com sucesso!",
           icon: "success",
           customClass: {
@@ -182,29 +182,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
               Método de Pagamento *
             </label>
             <div className="flex justify-between w-full">
-              {
-                myPaymentData?.map(item => (
-                  <div key={item.id}>
-                    {
-                      item.payment_method.short_name == PaymentDataEnum.MCX ?
-                        <button
-
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, payment_method_id: item.payment_method.id, payment_data_id: item.id, method: "express" }))}
-                          className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'express'
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                        >
-                          <Smartphone className="w-6 h-6 text-green-600" />
-                          <span className="text-sm font-medium">Multicaixa Express</span>
-                          <span className="text-xs text-gray-500">Instantâneo</span>
-                        </button>
-                        : ""
-                    }
-                  </div>
-                ))
-              }
+             
               {
                 myPaymentData?.map(item => (
                   <div key={item.id}>

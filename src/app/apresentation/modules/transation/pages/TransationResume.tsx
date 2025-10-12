@@ -14,7 +14,6 @@ import {
     ArrowLeft,
     ArrowDownLeft
 } from 'lucide-react';
-import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
 import AnchorTemporaryDrawer from '@/components/Shared-Compoonents/MenuMobile';
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
@@ -23,16 +22,17 @@ import UserAuthenticated from '@/components/Shared-Compoonents/UserAuthenticated
 import { Loader } from '@/components/Loader';
 import ModalPaymentData from '../../profile/components/ModalPaymentData';
 import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
-import { PaymentDataEnum } from '../../profile/types/PaymentDataType';
 import ModalPaymentDataUpdate from '../../profile/components/ModalPaymentDataUpdate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { handleTranstionEnum } from '../types/TransationType';
+import useCancelPaymentRequest from '../services/useCancelPaymentRequest';
 
 interface DashboardProps {
     user: any;
 }
 
 export default function TransationResume() {
+    const { UpdateCancelPayemntRequest, loader } = useCancelPaymentRequest()
     const [openAddModal, setOpenAddModal] = useState(false)
     const { data } = UseListAffiliatedUsers()
     const [currentView, setCurrentView] = useState('dashboard');
@@ -94,18 +94,7 @@ export default function TransationResume() {
         // Aqui você poderia adicionar uma notificação de sucesso
     };
 
-    if (currentView === 'withdrawals') {
-        return (
-            <>
-                {myData && (
-                    <WithdrawalPage
-                        user={myData}
-                        onBack={() => setCurrentView('dashboard')}
-                    />
-                )}
-            </>
-        );
-    }
+
 
     const navegate = useNavigate()
     const location = useLocation()
@@ -181,7 +170,9 @@ export default function TransationResume() {
                                         </div>
                                         <span className='border border-dashed border-1 block'></span>
                                         <div className='flex justify-end mt-5'>
-                                            <button className='bg-red-600  text-white rounded p-2 cursor-pointer'>Cancelar Solicitação</button>
+                                            <button className='bg-red-600  text-white rounded p-2 cursor-pointer'
+                                             onClick={()=>UpdateCancelPayemntRequest(transaction.id)}
+                                            >Cancelar Solicitação</button>
                                         </div>
                                     </div>
                                 </div>
@@ -291,6 +282,7 @@ export default function TransationResume() {
                 />
             </div>
             {loaderControl && <Loader />}
+            {loader && <Loader />}
         </div>
     );
 }

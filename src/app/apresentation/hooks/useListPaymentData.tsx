@@ -9,9 +9,10 @@ export default function useListPaymentData() {
     async function listPaymentData() {
         try {
             const response = await api.get("/payment-type/list", headersConfig())
-            setPaymentData(response.data.data)
-            console.log(response)
-    
+       
+         const fiilterPaymentMethod = response.data.data.filter((item:any)=>item.short_name != "MCX")
+      setPaymentData(fiilterPaymentMethod)
+         console.log( "||",fiilterPaymentMethod)
         } catch (error) {
             console.error(error)
         }

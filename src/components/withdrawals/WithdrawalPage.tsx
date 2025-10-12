@@ -1,17 +1,21 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, DollarSign, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, DollarSign, CreditCard, CheckCircle, AlertCircle, ArrowBigLeft, ArrowBigRight } from 'lucide-react';
 import WithdrawalModal from './WithdrawalModal';
 import WithdrawalsList from './WithdrawalsList';
 import { UserData } from '@/app/apresentation/modules/dashboard/types/userType';
 import useListMyPaymentData from '@/app/apresentation/modules/profile/services/useListMyPaymentData';
 import useListMyTransation from '../utils/useListMyTransation';
+import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
+import TransactionHistory from '../transactions/TransactionHistory';
+import { useNavigate } from 'react-router-dom';
 
 interface WithdrawalPageProps {
   user: UserData;
   onBack: () => void;
 }
 
-export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
+export default function WithdrawalPage() {
+  const { user } = useAuthMe()
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const { myTransations } = useListMyTransation()
   const [withdrawals, setWithdrawals] = useState([
@@ -51,14 +55,20 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
     setTimeout(() => setShowSuccessMessage(false), 5000);
   };
   const filter = useMemo(() => {
-    const panddingAmmount = myTransations?.filter(item => item.status_id.code == "7")
+    const panddingAmmount = myTransations?.filter(item => item.status_id.code == "8")
+      .reduce((acc: number, item: any) => {
+        return acc + Number(item.amount);
+      }, 0) || 0;
+    const sucessAmountW = myTransations?.filter(item => item.status_id.code == "12")
       .reduce((acc: number, item: any) => {
         return acc + Number(item.amount);
       }, 0) || 0;
        return {
-        panddingAmmount
+        panddingAmmount,
+        sucessAmountW
        }
   }, [myTransations])
+  const navegate = useNavigate()
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -66,12 +76,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-4">
-              <button
-                onClick={onBack}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
+             <ArrowLeft className='cursor-pointer'  onClick={()=>navegate(-1)}/>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Saques</h1>
                 <p className="text-gray-600">Gerencie suas solicitações de saque</p>
@@ -109,7 +114,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Saldo Disponível</p>
                 <p className="text-3xl font-bold text-green-600 text-[20px]">
-                  {user.point.value} Kz
+                  {user?.point.value} Kz
                 </p>                <p className="text-gray-500 text-sm">Disponível para saque</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -137,7 +142,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Total Sacado</p>
-                <p className="text-3xl font-bold text-blue-600 text-[20px]">{user.point.value} Kz</p>
+                <p className="text-3xl font-bold text-blue-600 text-[20px]">{filter?.sucessAmountW} Kz</p>
                 <p className="text-gray-500 text-sm">Este mês</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -158,15 +163,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
                 Informações Importantes sobre Levantamentos
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-800">
-                <div>
-                  <h4 className="font-medium mb-2">Multicaixa Express (Recomendado)</h4>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Processamento quase instantâneo</li>
-                    <li>• Sem taxas adicionais</li>
-                    <li>• Disponível 24h por dia, 7 dias por semana</li>
-                    <li>• Valor mínimo: 5.000 Kz</li>
-                  </ul>
-                </div>
+              
                 <div>
                   <h4 className="font-medium mb-2">Transferência Bancária (via IBAN)</h4>
                   <ul className="space-y-1 text-sm">
@@ -189,7 +186,7 @@ export default function WithdrawalPage({ user, onBack }: WithdrawalPageProps) {
 
 
         {/* Withdrawals List */}
-        <WithdrawalsList withdrawals={withdrawals} />
+        <TransactionHistory/>
       </main>
 
       {/* Withdrawal Modal */}

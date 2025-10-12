@@ -6,6 +6,7 @@ import { UserData } from '../types/userType'
 export default function useAuthMe() {
     const [myData, setMyData] = useState<UserData>()
     const [ loaderControl, setLoaderControl ] = useState(false)
+    const [myDataCustum, setMydataCustom] = useState<UserData>()
     async function me() {
         setLoaderControl(true)
         try {
@@ -23,8 +24,12 @@ export default function useAuthMe() {
     useEffect(() => {
         me()
     }, [])
+    useEffect(() => {
+     setMydataCustom(myData)
+    }, [myData])
     return {
         myData,
-        loaderControl
+        loaderControl,
+        user:myDataCustum
     }
 }

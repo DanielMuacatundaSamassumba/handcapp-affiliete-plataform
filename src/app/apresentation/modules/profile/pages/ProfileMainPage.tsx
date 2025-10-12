@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import {
   DollarSign,
   Users,
@@ -25,6 +25,7 @@ import useListMyPaymentData from '../services/useListMyPaymentData';
 import { PaymentDataEnum } from '../types/PaymentDataType';
 import ModalPaymentDataUpdate from '../components/ModalPaymentDataUpdate';
 import { useNavigate } from 'react-router-dom';
+import ModalUpdateDataUser from '../components/ModalUpdateDataUser';
 interface DashboardProps {
   user: any;
 }
@@ -38,6 +39,7 @@ export default function ProfileMainPage() {
   const [reference, setReference] = useState("")
   const [PaymentDataId, setPaymentDataId] = useState("")
   const [UpdateOpenModal, setUpdateOpenModal] = useState(false)
+  const [openUserModal, setOpenUserModal] = useState(false)
   const [Id, setId] = useState("")
   const availableBalance = 2847.50; // This would come from your backend
   const formattedValue = new Intl.NumberFormat('pt-AO', {
@@ -91,18 +93,6 @@ export default function ProfileMainPage() {
     // Aqui você poderia adicionar uma notificação de sucesso
   };
 
-  if (currentView === 'withdrawals') {
-  return (
-    <>
-      {myData && (
-        <WithdrawalPage
-          user={myData}
-          onBack={() => setCurrentView('dashboard')}
-        />
-      )}
-    </>
-  );
-}
 
   const navegate = useNavigate()
   return (
@@ -113,10 +103,10 @@ export default function ProfileMainPage() {
             <div className='flex items-center space-x-4'>
               <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
               <div>
-               <div className='flex items-center'>
-                <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={()=>navegate(-1)}/>
-               <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
-               </div>
+                <div className='flex items-center'>
+                  <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
+                  <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
+                </div>
                 <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
               </div>
             </div>
@@ -126,7 +116,7 @@ export default function ProfileMainPage() {
                   <ul className='flex'>
 
 
-                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Referidos</li>
+                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Usários</li>
                     <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
 
 
@@ -138,7 +128,9 @@ export default function ProfileMainPage() {
               <div className='block lg:hidden'>
                 <AnchorTemporaryDrawer />
               </div>
-              <button onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+              <button
+               onClick={() => navegate('/withdrawal')}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
 
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
@@ -172,10 +164,20 @@ export default function ProfileMainPage() {
             <p className='text-zinc-400'>{myData?.email ? myData?.email : "N/A"}</p>
 
           </div>
+          <div className=' flex justify-between border-b border-zinc-300 p-4 '>
+            <p className='text-zinc-400'>Endereço</p>
+            <p className='text-zinc-400'>{myData?.address ? myData?.address : "N/A"}</p>
+
+          </div>
 
 
           <div className='mt-4 flex justify-end'>
-            <button className='bg-handcapp_color text-white rounded p-2'>Alterar Dados</button>
+            <button className='bg-handcapp_color text-white rounded p-2'
+             onClick={()=>setOpenUserModal(true)}
+            >Alterar Dados Pessoais</button>
+            <button className='bg-handcapp_color text-white rounded p-2 ml-4'
+             onClick={()=>setOpenUserModal(true)}
+            >Alterar Palavra-passe</button>
           </div>
         </div>
         <div className=' bg-white p-5 mt-2 shadow-md  w-11/12 md:w-6/12 lg:w-1/3'>
@@ -226,7 +228,7 @@ export default function ProfileMainPage() {
                             <p className='text-zinc-400 text-xl mt-2'>{item.reference}</p>
                             <Pencil className='w-20 text-zinc-400 cursor-pointer'
                               onClick={() => {
-                              
+
                                 setId(item.id)
                                 setReference(item.reference)
                                 setPaymentDataId(item.payment_method.id),
@@ -247,6 +249,7 @@ export default function ProfileMainPage() {
         </div>
         <ModalPaymentData open={openAddModal} setOpen={setOpenAddModal} />
 
+        <ModalUpdateDataUser open={openUserModal} setOpen={setOpenUserModal} />
         <ModalPaymentDataUpdate
           open={UpdateOpenModal}
           setOpen={setUpdateOpenModal}

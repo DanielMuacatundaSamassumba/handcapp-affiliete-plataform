@@ -19,6 +19,7 @@ import AnchorTemporaryDrawer from '../Shared-Compoonents/MenuMobile';
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
 import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
 import UserAuthenticated from '../Shared-Compoonents/UserAuthenticated';
+import { useNavigate } from 'react-router-dom';
 interface DashboardProps {
   user: any;
 }
@@ -79,17 +80,7 @@ export default function Dashboard() {
     navigator.clipboard.writeText(link);
     // Aqui você poderia adicionar uma notificação de sucesso
   };
-
-if (currentView === 'withdrawals') {
-  return (
-    myData && (
-      <WithdrawalPage
-        user={myData}
-        onBack={() => setCurrentView('dashboard')}
-      />
-    )
-  );
-}
+ const navegate = useNavigate()
 
 
   return (
@@ -117,7 +108,7 @@ if (currentView === 'withdrawals') {
               <div className='block lg:hidden'>
                 <AnchorTemporaryDrawer />
               </div>
-              <button onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+              <button onClick={() => navegate('/withdrawal')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>

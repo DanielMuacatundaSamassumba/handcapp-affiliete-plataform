@@ -1,10 +1,12 @@
 export interface UserData {
+    id:string
     name: string;
     email: string;
     phone: string;
     point: UserPoint;
     status: UserStatus;
     affiliate_code: string;
+    address:string
     created_at: string;
     permissions: string[];
     image_path:string

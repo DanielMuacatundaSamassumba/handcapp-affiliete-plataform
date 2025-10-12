@@ -1,7 +1,7 @@
-import React from 'react';
 import { ArrowUpRight, ArrowDownLeft, Calendar, DollarSign } from 'lucide-react';
 import useListMyTransation from '../utils/useListMyTransation';
 import { Link, useNavigate } from 'react-router-dom';
+
 
 export default function TransactionHistory() {
   const { myTransations } = useListMyTransation()
@@ -61,13 +61,13 @@ export default function TransactionHistory() {
                       </p>
                       <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${transaction.status_id.name === 'success'
                         ? 'bg-green-100 text-green-800'
-                        : transaction.status_id.name === 'under analysis'
+                        : transaction.status_id.name === 'pending'
                           ? 'bg-yellow-100 text-yellow-800'
                           : 'bg-red-100 text-red-800'
                         }`}>
                         {transaction.status_id.name === 'success' ? 'Concluído' :
-                          transaction.status_id.name === 'under analysis'
-                           ? 'Em Analise' : 
+                          transaction.status_id.name === 'pending'
+                           ? 'Pendente' : 
                            transaction.status_id.name === "canceled" ? "Cancelado":
                            'Falhou'}
                       </span>
@@ -82,10 +82,13 @@ export default function TransactionHistory() {
         </div>
 
         <div className="mt-6 text-center">
+         <Link to={"/history"}>
           <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
             Ver histórico completo
           </button>
+         </Link>
         </div>
+        
       </div>
     </div>
   );

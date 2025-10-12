@@ -35,7 +35,7 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                                     {
                                         Array.isArray(paymentData) && paymentData?.map((item) => (
                                        
-                                                <option value={item.id} key={item.id}>{item.name} </option>
+                                                  <option value={item.id} key={item.id}>{item.name} </option>
                                         ))
                                     }
                                 </select>
