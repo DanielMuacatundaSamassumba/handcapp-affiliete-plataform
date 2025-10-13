@@ -13,8 +13,9 @@ export default function AffiliatesList() {
       
       <div className="p-6">
         <div className="space-y-4">
-          {data?.map((affiliate) => (
-            <div key={affiliate?.user_affiliated?.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+          {data?.map((affiliate, index) => (
+            index <= 2 && (
+              <div key={affiliate?.user_affiliated?.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
               <div className="flex items-center space-x-4">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                    {
@@ -55,6 +56,7 @@ export default function AffiliatesList() {
                 </span>
               </div>
             </div>
+             )
           ))}
         </div>
         

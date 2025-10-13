@@ -8,7 +8,8 @@ import { PaymentDataEnum } from '../types/PaymentDataType'
 export default function useAddPayemntData() {
     const [formData, setFormData] = useState({
         payment_method_id: "",
-        reference: ""
+        reference: "",
+        bank_id:""
     })
     const { paymentData } = useListPaymentData()
     const [loaderControl, setLoaderControl] = useState(false)
@@ -53,6 +54,7 @@ export default function useAddPayemntData() {
                             container: "swal2-container "
                         }
                     })
+                    console.log(formData)
                     return;
                 }
             } else {
@@ -64,6 +66,7 @@ export default function useAddPayemntData() {
                         container: "swal2-container "
                     }
                 })
+       
             }
         } else {
             if (formData.reference.length == 9) {

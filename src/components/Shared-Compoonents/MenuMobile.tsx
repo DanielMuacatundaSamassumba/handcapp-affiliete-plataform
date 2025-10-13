@@ -9,6 +9,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
@@ -42,27 +43,17 @@ export default function AnchorTemporaryDrawer() {
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
         >
-            <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? "<InboxIcon />" : "<MailIcon />"}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+           
             <Divider />
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
+                {[{text:'Histórico', link:"/history"},
+                    {text:'Usuários', link:"/users"},
+                    {text:'Solicitar Saque', link:"/withdrawal"}
+                ].map((text, index) => (
+                    <ListItem key={text.link} disablePadding>
                         <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? "<InboxIcon />" : "<MailIcon />"}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
+                     <Link to={text.link}>
+                     <ListItemText primary={text.text} /></Link>
                         </ListItemButton>
                     </ListItem>
                 ))}

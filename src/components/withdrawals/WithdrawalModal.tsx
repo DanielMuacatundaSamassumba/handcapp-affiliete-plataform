@@ -26,7 +26,8 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
     amount: '',
     method: '',
     payment_method_id: "",                             // IBAN Angolano (ex.: AO06 0005 0000 7998 9111 1019 7)
-    payment_data_id: ""
+    payment_data_id: "",
+    bank_id:""
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -116,7 +117,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
             container: "swal2-container "
           }
         })
-        console.error(error)
+        console.error(formData)
       }
 
 
@@ -190,7 +191,7 @@ export default function WithdrawalModal({ isOpen, onClose, onSubmit, availableBa
                       item.payment_method.short_name == PaymentDataEnum.TRANSFER ?
                         <button
                           type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, payment_method_id: item.payment_method.id, payment_data_id: item.id, method: "bank" }))}
+                          onClick={() => setFormData(prev => ({ ...prev, payment_method_id: item.payment_method.id, payment_data_id: item.id, bank_id: String(item.bank.id), method: 'bank' }))}
                           className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition-all ${formData.method === 'bank'
                             ? 'border-green-500 bg-green-50'
                             : 'border-gray-200 hover:border-gray-300'

@@ -1,38 +1,20 @@
-import { useState } from 'react';
-import {
-    DollarSign,
-    Users,
-    TrendingUp,
-    Eye,
-    Copy,
-    Share2,
-    CreditCard,
-    ArrowUpRight,
-    Ticket,
-    Pencil,
-    ArrowBigLeft,
-    ArrowLeft,
-    ArrowDownLeft,
-    Calendar
-} from 'lucide-react';
-import { images } from '@/app/constatnts/images';
-import AnchorTemporaryDrawer from '@/components/Shared-Compoonents/MenuMobile';
-import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
-import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
-import UserAuthenticated from '@/components/Shared-Compoonents/UserAuthenticated';
 import { Loader } from '@/components/Loader';
+import React, { useState } from 'react'
+import ModalUpdateDataUser from '../../profile/components/ModalUpdateDataUser';
 import ModalPaymentData from '../../profile/components/ModalPaymentData';
-import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
+import { ArrowLeft, Calendar, CreditCard, DollarSign, Pencil, Ticket, User, Users } from 'lucide-react';
+import { PaymentDataEnum } from '../../profile/types/PaymentDataType';
 import ModalPaymentDataUpdate from '../../profile/components/ModalPaymentDataUpdate';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { handleTranstionEnum } from '../types/TransationType';
-import useCancelPaymentRequest from '../services/useCancelPaymentRequest';
-import TransactionHistory from '@/components/transactions/TransactionHistory';
-import useListMyTransation from '@/components/utils/useListMyTransation';
+import UserAuthenticated from '@/components/Shared-Compoonents/UserAuthenticated';
+import AnchorTemporaryDrawer from '@/components/Shared-Compoonents/MenuMobile';
+import { Link, useNavigate } from 'react-router-dom';
+import { images } from '@/app/constatnts/images';
+import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
+import UseListAffiliatedUsers from '../../dashboard/hooks/UseListAffiliatedUsers';
+import useAuthMe from '../../dashboard/hooks/useAuthMe';
+import AffiliatesList from '@/components/affiliates/AffiliatesList';
 
-
-
-export default function TransationsMainPage() {
+export default function UserMainPage() {
     const [openAddModal, setOpenAddModal] = useState(false)
     const { data } = UseListAffiliatedUsers()
     const [currentView, setCurrentView] = useState('dashboard');
@@ -41,8 +23,8 @@ export default function TransationsMainPage() {
     const [reference, setReference] = useState("")
     const [PaymentDataId, setPaymentDataId] = useState("")
     const [UpdateOpenModal, setUpdateOpenModal] = useState(false)
+    const [openUserModal, setOpenUserModal] = useState(false)
     const [Id, setId] = useState("")
-    const { myTransations, loader } = useListMyTransation()
     const availableBalance = 2847.50; // This would come from your backend
     const formattedValue = new Intl.NumberFormat('pt-AO', {
         style: 'currency',
@@ -96,7 +78,6 @@ export default function TransationsMainPage() {
     };
 
 
-
     const navegate = useNavigate()
     return (
         <div className="min-h-screen bg-gray-50">
@@ -108,7 +89,7 @@ export default function TransationsMainPage() {
                             <div>
                                 <div className='flex items-center'>
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                                    <h1 className="text-2xl font-bold text-gray-900">Histórico</h1>
+                                    <h1 className="text-2xl font-bold text-gray-900">Usuários</h1>
                                 </div>
                                 <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
@@ -119,12 +100,9 @@ export default function TransationsMainPage() {
                                     <ul className='flex'>
 
 
-
                                         <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
                                         <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
                                         <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
-
-
 
                                     </ul>
                                 </nav>
@@ -144,63 +122,56 @@ export default function TransationsMainPage() {
                     </div>
                 </div>
             </header>
-
-            {myTransations && [...myTransations].reverse().map((transaction, index) => (
-                <div key={index} className='flex justify-center'  >
-                    {
-
-
-                        <div key={transaction.id}
-                            onClick={() => navegate("/transation-resume", { state: { data: transaction } })}
-                            className="flex items-center justify-between w-11/12 mt-4 cursor-pointer p-4 border border-gray-200 rounded-lg bg-white hover:border-blue-300 hover:shadow-md transition-all md:w-1/2">
-                            <div className="flex items-center space-x-4">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transaction.status_id.name === 'success'
-                                    ? 'bg-green-100'
-                                    : 'bg-orange-100'
-                                    }`}>
-                                    {transaction.status_id.name === 'success' ? (
-                                        <ArrowDownLeft className="w-5 h-5 text-green-600" />
-                                    ) : (
-                                        <ArrowUpRight className="w-5 h-5 text-orange-600" />
-                                    )}
-                                </div>
-                                <div>
-                                    {<h3 className=" text-[15px]">{transaction?.notification?.description}</h3>}
-                                    <div className="flex items-center text-xs text-gray-500 mt-2">
-                                        <Calendar className="w-3 h-3 mr-1" />
-                                        {new Date(transaction.created_at).toLocaleDateString('pt-BR')}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className={`font-semibold ${transaction.status_id.name === 'earning' ? 'text-green-600' : 'text-orange-600'
-                                    }`}>
-                                    {transaction.status_id.name === 'earning' ? '+' : '-'}{transaction.amount}
-                                </p>
-                                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${transaction.status_id.name === 'success'
-                                    ? 'bg-green-100 text-green-800'
-                                    : transaction.status_id.name === 'pending'
-                                        ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-red-100 text-red-800'
-                                    }`}>
-                                    {transaction.status_id.name === 'success' ? 'Concluído' :
-                                        transaction.status_id.name === 'pending'
-                                            ? 'Pendente' :
-                                            transaction.status_id.name === "canceled" ? "Cancelado" :
-                                                'Falhou'}
-                                </span>
-                            </div>
-
-                        </div>
-
-                    }
+            <div className="p-6">
+        <div className="space-y-4 flex flex-col  items-center justify-center">
+          {data?.map((affiliate) => (
+            <div key={affiliate?.user_affiliated?.id} className=" bg-white flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all md:w-1/2">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                   {
+                     affiliate?.user_affiliated?.image_path ? (
+                      <img
+                      src={affiliate?.user_affiliated?.image_path}
+                      alt={affiliate?.user_affiliated?.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                     ) : (
+                      <User className="w-5 h-5 text-blue-600" />
+                     )
+                   }
                 </div>
-            ))}
-            {
-                loader && (
-                    <Loader />
-                )
-            }
+                <div>
+                  <h3 className="font-medium text-gray-900">{affiliate?.user_affiliated?.name}</h3>
+                  <p className="text-sm text-gray-600">{affiliate?.user_affiliated?.name}</p>
+                  <div className="flex items-center space-x-4 mt-1">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(affiliate?.UserAffialtedData?.created_at).toLocaleDateString('pt-BR')}
+                    </div>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <DollarSign className="w-3 h-3 mr-1" />
+                
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                {/*<p className="font-semibold text-green-600">{affiliate.totalEarnings}</p>*/}
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                  affiliate?.user_affiliated?.status === '1' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {        affiliate?.user_affiliated?.status === '1' ? "Activo":"Inactivo" }
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+       
+      </div>
+            {loaderControl && <Loader />}
         </div>
     );
 }

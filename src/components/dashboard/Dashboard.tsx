@@ -19,7 +19,9 @@ import AnchorTemporaryDrawer from '../Shared-Compoonents/MenuMobile';
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
 import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
 import UserAuthenticated from '../Shared-Compoonents/UserAuthenticated';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useListMyTransation from '../utils/useListMyTransation';
+import useMyEarns from '@/app/apresentation/modules/dashboard/hooks/useMyEarns';
 interface DashboardProps {
   user: any;
 }
@@ -30,10 +32,61 @@ export default function Dashboard() {
   const { myData}= useAuthMe()
   const availableBalance = 2847.50; // This would come from your backend
   console.log(myData)
+    const { myTransations } = useListMyTransation()
   const formattedValue = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA'
   }).format(myData?.point.value ?? 0);
+  const date = new Date();
+const { myEarns } = useMyEarns();
+
+// Formata a data de hoje
+const todayFormatted = date.toLocaleDateString('pt-BR');
+
+// Cria uma data de ontem
+const yesterday = new Date(date);
+yesterday.setDate(date.getDate() - 1);
+const yesterdayFormatted = yesterday.toLocaleDateString('pt-BR');
+
+// Filtra e soma os ganhos de hoje
+const myEarnsToday = myEarns
+  ?.filter((earn: any) => 
+    new Date(earn.created_at).toLocaleDateString('pt-BR') === todayFormatted
+  )
+  .reduce((acc: number, earn: any) => acc + parseFloat(earn.value), 0) || 0;
+
+// Filtra e soma os ganhos de ontem
+const myEarnsYesterday = myEarns
+  ?.filter((earn: any) => 
+    new Date(earn.created_at).toLocaleDateString('pt-BR') === yesterdayFormatted
+  )
+  .reduce((acc: number, earn: any) => acc + parseFloat(earn.value), 0) || 0;
+
+    const { dataUsers } = UseListAffiliatedUsers();
+
+// Pega a data de hoje
+const today = new Date();
+
+// Calcula o primeiro dia da semana (segunda-feira)
+const firstDayOfWeek = new Date(today);
+const dayOfWeek = today.getDay(); // 0 = domingo, 1 = segunda, ...
+const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
+firstDayOfWeek.setDate(today.getDate() - diffToMonday);
+
+// Normaliza para ignorar horário (comparar apenas datas)
+firstDayOfWeek.setHours(0, 0, 0, 0);
+today.setHours(23, 59, 59, 999);
+
+// Filtra os usuários criados entre segunda-feira e hoje
+const usersThisWeek = dataUsers?.filter((user: any) => {
+  const createdAt = new Date(user.created_at);
+  return createdAt >= firstDayOfWeek && createdAt <= today;
+}) || [];
+
+// Número total de usuários nesta semana
+const totalUsersThisWeek = usersThisWeek.length;
+
+console.log("Usuários cadastrados nesta semana:", dataUsers);
   const stats = [
     {
       title: 'Total de Lucros',
@@ -44,28 +97,28 @@ export default function Dashboard() {
       trend: { value: '', isPositive: true }
     },
     {
-      title: 'Total de Lucros Sacado',
-      value:`${formattedValue ?? 0}`,
-      subtitle: 'Este mês',
+      title: 'Ganho Hoje',
+      value:`${myEarnsToday ?? 0} Kz`,
+      subtitle: 'Ontem',
       icon: DollarSign,
       color: 'text-green-600',
-      trend: { value: '12%', isPositive: true }
+      trend: { value: `${myEarnsYesterday} Kz`, isPositive: true }
     },
     {
-      title: 'Referidos Ativos',
-      value:`${data?.length ?? 0}`,
-      subtitle: 'Total de referidos',
+      title: 'Total de  Usuário',
+      value:`${dataUsers?.length ?? 0}`,
+      subtitle: 'Novos Usuários Nesta Semana',
       icon: Users,
       color: 'text-blue-600',
-      trend: { value: '8%', isPositive: true }
+      trend: { value: `${totalUsersThisWeek}`, isPositive: true }
     },
     {
       title: 'Total de Fichas',
       value: '32',
-      subtitle: 'Últimos 30 dias',
+      subtitle: 'Fichas Nesta Semana',
       icon: Ticket,
       color: 'text-purple-600',
-      trend: { value: '0.5%', isPositive: true }
+      trend: { value: '10', isPositive: true }
     },
 
   ];
@@ -99,8 +152,9 @@ export default function Dashboard() {
               <header className='hidden lg:block'>
                 <nav>
                   <ul className='flex'>
-                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Referidos</li>
-                    <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
+                  <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
+                                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
+                                        <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
                   </ul>
                 </nav>
               </header>
@@ -108,7 +162,7 @@ export default function Dashboard() {
               <div className='block lg:hidden'>
                 <AnchorTemporaryDrawer />
               </div>
-              <button onClick={() => navegate('/withdrawal')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+              <button onClick={() => navegate('/withdrawal')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 hidden md:block md:flex md:flex-row">
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>
@@ -135,7 +189,7 @@ export default function Dashboard() {
               onClick={() => setCurrentView('withdrawals')}
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3" onClick={()=>navegate('/withdrawal')}>
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
                   <CreditCard className="w-5 h-5 text-green-600" />
                 </div>

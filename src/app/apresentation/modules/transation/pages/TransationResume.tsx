@@ -23,7 +23,7 @@ import { Loader } from '@/components/Loader';
 import ModalPaymentData from '../../profile/components/ModalPaymentData';
 import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
 import ModalPaymentDataUpdate from '../../profile/components/ModalPaymentDataUpdate';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { handleTranstionEnum } from '../types/TransationType';
 import useCancelPaymentRequest from '../services/useCancelPaymentRequest';
 
@@ -99,6 +99,7 @@ export default function TransationResume() {
     const navegate = useNavigate()
     const location = useLocation()
     const transaction = location.state.data
+    console.log(transaction)
     return (
         <div className="min-h-screen bg-gray-50">
             <header className="bg-white shadow-sm border-b border-gray-200">
@@ -120,8 +121,9 @@ export default function TransationResume() {
                                     <ul className='flex'>
 
 
-                                        <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Referidos</li>
-                                        <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
+                                    <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
+                                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
+                                        <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
 
 
 
@@ -132,7 +134,7 @@ export default function TransationResume() {
                             <div className='block lg:hidden'>
                                 <AnchorTemporaryDrawer />
                             </div>
-                            <button onClick={() => setCurrentView('withdrawals')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+                            <button onClick={() => navegate('/withdrawal')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 hidden md:block md:flex md:flex-row">
 
                                 <CreditCard className="w-4 h-4" />
                                 <span>Solicitar Saque</span>
@@ -147,7 +149,7 @@ export default function TransationResume() {
                 <div className='w-full'>
                     <div className='w-full flex  justify-center'>
                         {
-                            transaction.status_id.code == "7" && (
+                            transaction.status_id.code == "8" && (
                                 <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-4/12'>
                                     <div className='bg-orange-500 flex flex-row  items-center justify-center text-white w-24 h-24 rounded-full'>
                                         <p className='text-white text-[50px]'>!</p>
@@ -171,7 +173,7 @@ export default function TransationResume() {
                                         <span className='border border-dashed border-1 block'></span>
                                         <div className='flex justify-end mt-5'>
                                             <button className='bg-red-600  text-white rounded p-2 cursor-pointer'
-                                             onClick={()=>UpdateCancelPayemntRequest(transaction.id)}
+                                                onClick={() => UpdateCancelPayemntRequest(transaction.id)}
                                             >Cancelar Solicitação</button>
                                         </div>
                                     </div>
@@ -214,7 +216,7 @@ export default function TransationResume() {
                                         <img src={images.IconFalied} className='w-full h-full' />
                                     </div>
                                     <div className='w-full '>
-                                        <h1 className='text-[22px] text-center  font-semibold  text-zinc-400 mt-4'>Pagamento  Falhou</h1>
+                                        <h1 className='text-[22px] text-center  font-semibold  text-zinc-400 mt-4'>Pagamento  Cancelado</h1>
                                         <span className='border border-dashed border-1 mt-5 block'></span>
                                         <div className='w-full flex justify-between p-4'>
                                             <p className='text-[18px] text-zinc-500'>Montate</p>
@@ -243,7 +245,7 @@ export default function TransationResume() {
                                         <img src={images.Iconsucess} className='w-full h-full' />
                                     </div>
                                     <div className='w-full '>
-                                    <h1 className='text-[22px] text-center  font-semibold  text-zinc-400 mt-4'>Pagamento  Feito Com Sucesso!</h1>
+                                        <h1 className='text-[22px] text-center  font-semibold  text-zinc-400 mt-4'>Pagamento  Feito Com Sucesso!</h1>
 
                                         <span className='border border-dashed border-1 mt-5 block'></span>
                                         <div className='w-full flex justify-between p-4'>

@@ -45,6 +45,12 @@ export type PaymentData = {
     created_at: string | null;
     updated_at: string | null;
   };
+  bank:{
+    id: number;
+    name: string;
+    code: string;       // primeiros 4 dígitos do IBAN
+    short_name: string;
+  }
 };
 
 
@@ -55,3 +61,10 @@ export interface paymentDataTypes {
    reference:string,
    id?:string
 }
+
+export type Bank = {
+  id: number;
+  name: string;
+  code: string;       // primeiros 4 dígitos do IBAN
+  short_name: string;
+};

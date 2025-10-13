@@ -5,14 +5,20 @@ import React from 'react'
 import useAddPayemntData from '../services/useAddPayemntData'
 import { PaymentDataEnum } from '../types/PaymentDataType'
 import { Loader } from '@/components/Loader'
+import useBanks from '../services/useBanks'
+import Select from 'react-select'
 
 export default function ModalPaymentData(params: { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
     const { paymentData } = useListPaymentData()
     const { open, setOpen } = params
+    const { banks } = useBanks()
     const { handleOnchageValue, formData, handleSubmit, loaderControl } = useAddPayemntData()
     const Onclose = () => {
         setOpen(!open)
     }
+     const optionsData = banks && banks.map((item)=>{
+         return { value: item.id, label: item.name }
+     })
     return (
         <div>
             <Modal open={open} onClose={Onclose}>
@@ -26,7 +32,7 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                             <div className='mt-5'>
                                 <label htmlFor="">Selecione  metódo de Pagamento</label>
                                 <select
-                                required
+                                    required
                                     name='payment_method_id'
                                     value={formData.payment_method_id}
                                     onChange={handleOnchageValue}
@@ -34,16 +40,25 @@ export default function ModalPaymentData(params: { open: boolean, setOpen: React
                                     <option value="">Selecione </option>
                                     {
                                         Array.isArray(paymentData) && paymentData?.map((item) => (
-                                       
-                                                  <option value={item.id} key={item.id}>{item.name} </option>
+
+                                            <option value={item.id} key={item.id}>{item.name} </option>
                                         ))
                                     }
                                 </select>
                             </div>
+                            <div className='mt-5'>
+                                <label htmlFor="">Banco</label>
+                                <Select
+                                    options={optionsData}
+                                    value={optionsData?.find((option: any) => option.value === formData.bank_id) ?? null}
+                                    onChange={(selectedOption) => handleOnchageValue({ target: { name: 'bank_id', value: selectedOption?.value } })}
+                                    name="bank_id"
+                                />
+                            </div>
                             <div className='mt- flex  flex-col'>
                                 <label htmlFor="">Referência</label>
                                 <input
-                                required
+                                    required
                                     type="text"
                                     placeholder='Referência'
                                     value={formData.reference}

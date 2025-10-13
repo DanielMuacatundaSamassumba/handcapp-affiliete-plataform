@@ -24,7 +24,7 @@ import useListPaymentData from '@/app/apresentation/hooks/useListPaymentData';
 import useListMyPaymentData from '../services/useListMyPaymentData';
 import { PaymentDataEnum } from '../types/PaymentDataType';
 import ModalPaymentDataUpdate from '../components/ModalPaymentDataUpdate';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ModalUpdateDataUser from '../components/ModalUpdateDataUser';
 interface DashboardProps {
   user: any;
@@ -116,10 +116,9 @@ export default function ProfileMainPage() {
                   <ul className='flex'>
 
 
-                    <li className=' text-zinc-700  cursor-pointer  text-[18px] ml-4 '>Usários</li>
-                    <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li>
-
-
+                  <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
+                                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
+                                        <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
 
                   </ul>
                 </nav>
@@ -128,9 +127,7 @@ export default function ProfileMainPage() {
               <div className='block lg:hidden'>
                 <AnchorTemporaryDrawer />
               </div>
-              <button
-               onClick={() => navegate('/withdrawal')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+              <button onClick={() => navegate('/withdrawal')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 hidden md:block md:flex md:flex-row">
 
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>

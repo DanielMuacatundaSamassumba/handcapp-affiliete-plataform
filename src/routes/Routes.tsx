@@ -8,12 +8,14 @@ import WithdrawalPage from '@/components/withdrawals/WithdrawalPage'
 import ProfileMainPage from '@/app/apresentation/modules/profile/pages/ProfileMainPage'
 import TransationResume from '@/app/apresentation/modules/transation/pages/TransationResume'
 import TransationsMainPage from '@/app/apresentation/modules/transation/pages/TransationsMainPage'
+import UserMainPage from '@/app/apresentation/modules/users/pages/UserMainPage'
 export default function Routes() {
      const DashboardMainPAgeAuth = AuthCheck(DashboardMainPage)
      const ProfileMainPageAuth = AuthCheck(ProfileMainPage)
      const TransationResumePageAuth = AuthCheck(TransationResume)
      const WithdrawalPageAuth = AuthCheck(WithdrawalPage)
      const TransationsMainPageAuth = AuthCheck(TransationsMainPage)
+     const UserMainPageAuth = AuthCheck(UserMainPage)
      const routes = createBrowserRouter([
           {
                path: "/",
@@ -50,6 +52,10 @@ export default function Routes() {
           {
                path: "history",
                element: <TransationsMainPageAuth />
+          },
+          {
+               path: "users",
+               element: <UserMainPageAuth />
           },
      ])
      return {

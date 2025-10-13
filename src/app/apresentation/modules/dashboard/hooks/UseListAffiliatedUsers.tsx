@@ -5,6 +5,7 @@ import { AffiliatedData } from '../types/UserAffiliatedType';
 
 export default function UseListAffiliatedUsers() {
     const [data, setData] = useState<AffiliatedData[]>()
+    const [dataUsers, setDataUsers] = useState<AffiliatedData[]>()
     const [ loaderControl, setLoaderControl] = useState(false)
 
     async function fetchAffiliatedUsers() {
@@ -12,6 +13,7 @@ export default function UseListAffiliatedUsers() {
         try {
             const response = await api.get("/affiliate-reference/list", headersConfig())
        setData(response.data.data)
+       setDataUsers(response.data.data)
        setLoaderControl(false)
        console.log(response.data.data)
         } catch (error) {
@@ -26,6 +28,7 @@ export default function UseListAffiliatedUsers() {
     }, [])
     return {
         data,
-         loaderControl
+         loaderControl,
+         dataUsers
     }
 }
