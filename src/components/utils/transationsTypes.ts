@@ -1,5 +1,6 @@
 export type Payment = {
     id: string;
+    payment_request_number:string
     amount: string;
     payment_method: string;
     payment_data: {

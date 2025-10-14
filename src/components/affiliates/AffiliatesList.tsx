@@ -2,8 +2,10 @@ import React from 'react';
 import { User, Calendar, DollarSign } from 'lucide-react';
 import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
 import { Loader } from '../Loader';
+import { useNavigate } from 'react-router-dom';
 export default function AffiliatesList() {
     const { data,loaderControl } = UseListAffiliatedUsers();
+    const navegate = useNavigate()
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 xl:col-span-1">
       <div className="p-6 border-b border-gray-100">
@@ -61,7 +63,7 @@ export default function AffiliatesList() {
         </div>
         
         <div className="mt-6 text-center">
-          <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+          <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors" onClick={()=>navegate('/users')}>
             Ver todos os afiliados
           </button>
         </div>

@@ -48,6 +48,7 @@ export default function TransactionHistory() {
                       </div>
                       <div>
                         {<h3 className=" text-[15px]">{transaction?.notification?.description}</h3>}
+                        {<h3 className=" text-[12px]">{transaction?.payment_request_number}</h3>}
                         <div className="flex items-center text-xs text-gray-500 mt-2">
                           <Calendar className="w-3 h-3 mr-1" />
                           {new Date(transaction.created_at).toLocaleDateString('pt-BR')}

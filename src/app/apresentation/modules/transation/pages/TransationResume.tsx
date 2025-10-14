@@ -150,7 +150,7 @@ export default function TransationResume() {
                     <div className='w-full flex  justify-center'>
                         {
                             transaction.status_id.code == "8" && (
-                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-4/12'>
+                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-6/12'>
                                     <div className='bg-orange-500 flex flex-row  items-center justify-center text-white w-24 h-24 rounded-full'>
                                         <p className='text-white text-[50px]'>!</p>
                                     </div>
@@ -169,6 +169,10 @@ export default function TransationResume() {
                                             <p className='text-[18px]   font-bold text-orange-500 '>{
                                                 handleTranstionEnum(transaction.status_id.code)
                                             }</p>
+                                        </div>
+                                        <div className='w-full flex justify-between p-4'>
+                                            <p className='text-[18px] text-zinc-500'>Número de Solicitação</p>
+                                            <p className='text-[16px] text-zinc-500'>{transaction?.payment_request_number}</p>
                                         </div>
                                         <span className='border border-dashed border-1 block'></span>
                                         <div className='flex justify-end mt-5'>
@@ -203,6 +207,11 @@ export default function TransationResume() {
                                                 handleTranstionEnum(transaction.status_id.code)
                                             }</p>
                                         </div>
+                                        <div className='w-full flex justify-between p-4'>
+                                            <p className='text-[18px] text-zinc-500'>Número de Solicitação</p>
+                                            <p className='text-[16px] text-zinc-500'>{transaction?.payment_request_number}</p>
+
+                                        </div>
                                         <span className='border border-dashed border-1 block'></span>
 
                                     </div>
@@ -231,6 +240,11 @@ export default function TransationResume() {
                                             <p className='text-[18px]   font-bold text-red-600 '>{
                                                 handleTranstionEnum(transaction.status_id.code)
                                             }</p>
+                                        </div>
+                                        <div className='w-full flex justify-between p-4'>
+                                            <p className='text-[18px] text-zinc-500'>Número de Solicitação</p>
+                                            <p className='text-[16px] text-zinc-500'>{transaction?.payment_request_number}</p>
+
                                         </div>
                                         <span className='border border-dashed border-1 block'></span>
 
@@ -261,6 +275,11 @@ export default function TransationResume() {
                                             <p className='text-[18px]   font-bold text-green-800 '>{
                                                 handleTranstionEnum(transaction.status_id.code)
                                             }</p>
+                                        </div>
+                                        <div className='w-full flex justify-between p-4'>
+                                            <p className='text-[18px] text-zinc-500'>Número de Solicitação</p>
+                                            <p className='text-[16px] text-zinc-500'>{transaction?.payment_request_number}</p>
+
                                         </div>
                                         <span className='border border-dashed border-1 block'></span>
                                         <div className='flex justify-end'>

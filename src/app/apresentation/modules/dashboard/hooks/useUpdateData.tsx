@@ -30,7 +30,7 @@ export default function useUpdateData() {
             const user = localStorage.getItem("data_user")
             const data_user = decrypt(user || "")
             const userLoggin = JSON.parse(data_user)
-            const response = await api.put(`user/udate/data/${userLoggin?.id}`,
+            const response = await api.put(`user/update/data/${userLoggin?.id}`,
                 formData,
                 headersConfig()
             )
