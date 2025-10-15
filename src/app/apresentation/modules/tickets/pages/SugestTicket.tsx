@@ -1,20 +1,40 @@
+import { SetStateAction, useState } from 'react';
+import {
+    DollarSign,
+    Users,
+    TrendingUp,
+    Eye,
+    Copy,
+    Share2,
+    CreditCard,
+    ArrowUpRight,
+    Ticket,
+    Pencil,
+    ArrowLeft,
+    Plus
+} from 'lucide-react';
+import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
+import { images } from '@/app/constatnts/images';
+import AnchorTemporaryDrawer from '@/components/Shared-Compoonents/MenuMobile';
+import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
+import UseListAffiliatedUsers from '@/app/apresentation/modules/dashboard/hooks/UseListAffiliatedUsers';
+import UserAuthenticated from '@/components/Shared-Compoonents/UserAuthenticated';
 import { Loader } from '@/components/Loader';
-import React, { useState } from 'react'
-import ModalUpdateDataUser from '../../profile/components/ModalUpdateDataUser';
 import ModalPaymentData from '../../profile/components/ModalPaymentData';
-import { ArrowLeft, Calendar, CreditCard, DollarSign, Pencil, Ticket, User, Users } from 'lucide-react';
+import useListPaymentData from '@/app/apresentation/hooks/useListPaymentData';
+import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
 import { PaymentDataEnum } from '../../profile/types/PaymentDataType';
 import ModalPaymentDataUpdate from '../../profile/components/ModalPaymentDataUpdate';
-import UserAuthenticated from '@/components/Shared-Compoonents/UserAuthenticated';
-import AnchorTemporaryDrawer from '@/components/Shared-Compoonents/MenuMobile';
 import { Link, useNavigate } from 'react-router-dom';
-import { images } from '@/app/constatnts/images';
-import useListMyPaymentData from '../../profile/services/useListMyPaymentData';
-import UseListAffiliatedUsers from '../../dashboard/hooks/UseListAffiliatedUsers';
-import useAuthMe from '../../dashboard/hooks/useAuthMe';
-import AffiliatesList from '@/components/affiliates/AffiliatesList';
+import ModalUpdateDataUser from '../../profile/components/ModalUpdateDataUser';
+import TicketCard from '../components/TicketCard';
+import Select from "react-select"
+import { ActionMeta, InputActionMeta } from 'react-select';
+interface DashboardProps {
+    user: any;
+}
 
-export default function UserMainPage() {
+export default function SugestTicket() {
     const [openAddModal, setOpenAddModal] = useState(false)
     const { data } = UseListAffiliatedUsers()
     const [currentView, setCurrentView] = useState('dashboard');
@@ -70,13 +90,71 @@ export default function UserMainPage() {
 
         // Aqui você poderia adicionar uma notificação de sucesso
     };
-
+    const games = [
+        {
+          id: "1",
+          homeTeam: {
+            name: "Manchester City",
+            logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+          },
+          awayTeam: {
+            name: "Real Madrid",
+            logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+          },
+          date: "2025-10-20",
+          time: "20:00",
+          stadium: "Etihad Stadium",
+          status: "Ao vivo",
+        },
+        {
+          id: "2",
+          homeTeam: {
+            name: "Barcelona",
+            logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+          },
+          awayTeam: {
+            name: "Liverpool",
+            logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
+          },
+          date: "2025-10-22",
+          time: "21:00",
+          stadium: "Camp Nou",
+          status: "Agendado",
+        },
+        {
+          id: "3",
+          homeTeam: {
+            name: "Bayern Munich",
+            logo: "https://upload.wikimedia.org/wikipedia/en/1/1f/FC_Bayern_München_logo_%282017%29.svg",
+          },
+          awayTeam: {
+            name: "Arsenal",
+            logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+          },
+          date: "2025-10-25",
+          time: "19:30",
+          stadium: "Allianz Arena",
+          status: "Finalizado",
+        },
+      ];
+ const options = games.map(game=>{
+      return{value:game.id,label:`${game.homeTeam.name} vs ${game.awayTeam.name} `}
+ })
+  const [ allGames , setAllGames] = useState({
+      game:"",
+      id:""
+  })
+  const handleAddGame = (e:any)=>{
+     const { name, value } = e.target
+      console.log({[name]:value})
+  }
     const handleCopyReferralLink = () => {
         const link = `https://exemplo.com/ref/${"user.referralCode"}`;
         navigator.clipboard.writeText(link);
         // Aqui você poderia adicionar uma notificação de sucesso
     };
 
+    const [selected, setSelected] = useState<{ value: string; label: string } | null>(null);
 
     const navegate = useNavigate()
     return (
@@ -89,7 +167,7 @@ export default function UserMainPage() {
                             <div>
                                 <div className='flex items-center'>
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                                    <h1 className="text-2xl font-bold text-gray-900">Usuários</h1>
+                                    <h1 className="text-2xl font-bold text-gray-900">Bater Ficha</h1>
                                 </div>
                                 <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
@@ -104,6 +182,7 @@ export default function UserMainPage() {
                                         <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
                                         <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
                                         <Link to={"/my-tickets"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Minhas Fichas</li></Link>
+
                                     </ul>
                                 </nav>
                             </header>
@@ -122,55 +201,32 @@ export default function UserMainPage() {
                     </div>
                 </div>
             </header>
-            <div className="p-6">
-        <div className="space-y-4 flex flex-col  items-center justify-center">
-          {data?.map((affiliate) => (
-            <div key={affiliate?.user_affiliated?.id} className=" bg-white flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all md:w-1/2">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                   {
-                     affiliate?.user_affiliated?.image_path ? (
-                      <img
-                      src={affiliate?.user_affiliated?.image_path}
-                      alt={affiliate?.user_affiliated?.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                     ) : (
-                      <User className="w-5 h-5 text-blue-600" />
-                     )
-                   }
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">{affiliate?.user_affiliated?.name}</h3>
-                  <p className="text-sm text-gray-600">{affiliate?.user_affiliated?.name}</p>
-                  <div className="flex items-center space-x-4 mt-1">
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {new Date(affiliate?.UserAffialtedData?.created_at).toLocaleDateString('pt-BR')}
+            <div className='flex flex-col items-center justify-center'>
+                <div className='flex flex-col bg-white shadow-md mt-5 rounded w-11/12 p-5 md:w-5/12'>
+                    <div className='w-full flex flex-col mt-4'>
+                        <label className='mt-2 mb-2'>Data</label>
+                        <input type="date" className='border p-2 rounded-md' />
                     </div>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <DollarSign className="w-3 h-3 mr-1" />
-                
+                    <div className='w-full flex flex-col mt-2'>
+                        <label className='mt-2 mb-2'>Liga</label>
+                        <Select
+                            className=" p-2 rounded-md  w-full"
+                            options={options}
+                            value={selected}
+                            onChange={(newValue) => setSelected(newValue)}
+                        />
                     </div>
-                  </div>
+                    <div className='w-full flex flex-col mt-2'>
+                        <label className='mt-2 mb-2'>Jogo</label>
+                        <Select
+                            className=" p-2 rounded-md  w-full"
+                            options={options}
+                            value={selected}
+                            onChange={(newValue) => setSelected(newValue)}
+                        />
+                    </div>
                 </div>
-              </div>
-              <div className="text-right">
-                {/*<p className="font-semibold text-green-600">{affiliate.totalEarnings}</p>*/}
-                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                  affiliate?.user_affiliated?.status === '1' 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {        affiliate?.user_affiliated?.status === '1' ? "Activo":"Inactivo" }
-                </span>
-              </div>
             </div>
-          ))}
-        </div>
-        
-       
-      </div>
             {loaderControl && <Loader />}
         </div>
     );

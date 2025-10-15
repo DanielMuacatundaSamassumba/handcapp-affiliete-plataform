@@ -20,8 +20,12 @@ export default function UserAuthenticated() {
                             className="cursor-pointer"
                              style={{width:40}}
                         >
-                            <div className='border-2 border-handcapp_color rounded-full'>
-                                <img src={myData?.image_path ? myData?.image_path : images.avatarIcon} className='w-12 rounded-full' />
+                            <div>
+                                <img 
+                                    src={myData?.image_path ? myData.image_path : images.handcappIcon} 
+                                    className="w-12 rounded-full" 
+                                    alt="User Avatar" 
+                                />
                             </div>
                         </Avatar>
                         <Menu {...bindMenu(popupState)} className='mt-6'>

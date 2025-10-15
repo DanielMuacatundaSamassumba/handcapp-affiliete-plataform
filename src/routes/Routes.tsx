@@ -9,6 +9,8 @@ import ProfileMainPage from '@/app/apresentation/modules/profile/pages/ProfileMa
 import TransationResume from '@/app/apresentation/modules/transation/pages/TransationResume'
 import TransationsMainPage from '@/app/apresentation/modules/transation/pages/TransationsMainPage'
 import UserMainPage from '@/app/apresentation/modules/users/pages/UserMainPage'
+import MyTicketMainPage from '@/app/apresentation/modules/tickets/pages/MyTicketMainPage'
+import SugestTicket from '@/app/apresentation/modules/tickets/pages/SugestTicket'
 export default function Routes() {
      const DashboardMainPAgeAuth = AuthCheck(DashboardMainPage)
      const ProfileMainPageAuth = AuthCheck(ProfileMainPage)
@@ -16,6 +18,8 @@ export default function Routes() {
      const WithdrawalPageAuth = AuthCheck(WithdrawalPage)
      const TransationsMainPageAuth = AuthCheck(TransationsMainPage)
      const UserMainPageAuth = AuthCheck(UserMainPage)
+     const MyTicketMainPagePageAuth = AuthCheck(MyTicketMainPage)
+     const SugestTicketPageAuth = AuthCheck(SugestTicket)
      const routes = createBrowserRouter([
           {
                path: "/",
@@ -56,6 +60,14 @@ export default function Routes() {
           {
                path: "users",
                element: <UserMainPageAuth />
+          },
+          {
+               path: "my-tickets",
+               element: <MyTicketMainPagePageAuth />
+          },
+          {
+               path: "my-tickets/suggest",
+               element: <SugestTicketPageAuth />
           },
      ])
      return {

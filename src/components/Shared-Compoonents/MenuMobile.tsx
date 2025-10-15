@@ -48,7 +48,8 @@ export default function AnchorTemporaryDrawer() {
             <List>
                 {[{text:'Histórico', link:"/history"},
                     {text:'Usuários', link:"/users"},
-                    {text:'Solicitar Saque', link:"/withdrawal"}
+                    {text:'Solicitar Saque', link:"/withdrawal"},
+                    {text:'Minhas Fichas', link:"/my-tickets"}
                 ].map((text, index) => (
                     <ListItem key={text.link} disablePadding>
                         <ListItemButton>

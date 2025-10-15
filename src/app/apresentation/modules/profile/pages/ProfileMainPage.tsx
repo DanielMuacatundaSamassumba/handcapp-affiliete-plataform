@@ -10,7 +10,8 @@ import {
   ArrowUpRight,
   Ticket,
   Pencil,
-  ArrowLeft
+  ArrowLeft,
+  Camera
 } from 'lucide-react';
 import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
@@ -26,11 +27,13 @@ import { PaymentDataEnum } from '../types/PaymentDataType';
 import ModalPaymentDataUpdate from '../components/ModalPaymentDataUpdate';
 import { Link, useNavigate } from 'react-router-dom';
 import ModalUpdateDataUser from '../components/ModalUpdateDataUser';
+import UplodImage from '../components/UplodImage';
 interface DashboardProps {
   user: any;
 }
 
 export default function ProfileMainPage() {
+  const [openUploudModal, setOpenUploudModal] = useState(false)
   const [openAddModal, setOpenAddModal] = useState(false)
   const { data } = UseListAffiliatedUsers()
   const [currentView, setCurrentView] = useState('dashboard');
@@ -93,7 +96,7 @@ export default function ProfileMainPage() {
     // Aqui você poderia adicionar uma notificação de sucesso
   };
 
-
+ console.log("eu", myData)
   const navegate = useNavigate()
   return (
     <div className="min-h-screen bg-gray-50">
@@ -141,8 +144,13 @@ export default function ProfileMainPage() {
       <div className='flex flex-col items-center justify-center'>
         <div className='bg-white mt-10 p-5 shadow-md rounded w-11/12 md:w-6/12 lg:w-1/3 border'>
           <div className=' flex items-center '>
-            <div className='border-4 border-handcapp_color  rounded-full'>
-              <img src={images.avatarIcon} alt="image-profile" className='w-20 rounded-full ' />
+            <div className='border-4 border-handcapp_color relative  rounded-full'>
+              <img src={myData?.image_path  ? myData?.image_path: images.handcappIcon  } alt="image-profile" className='w-20 h-20 rounded-full ' />
+                <div className='absolute top-[40px] left-[55px] '>
+                <Camera className='text-handcapp_color cursor-pointer'
+                  onClick={() => setOpenUploudModal(!openUploudModal)}
+                />
+                </div>
             </div>
             <div className='ml-4' >
               <p className='text-[17px]'>{myData?.name}</p>
@@ -243,6 +251,7 @@ export default function ProfileMainPage() {
             </div>
 
           </div>
+        {openUploudModal &&  <UplodImage image={myData?.image_path  || "" } setOpen={setOpenUploudModal}  open={openUploudModal}/>}
         </div>
         <ModalPaymentData open={openAddModal} setOpen={setOpenAddModal} />
 
