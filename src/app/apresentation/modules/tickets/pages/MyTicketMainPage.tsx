@@ -28,6 +28,7 @@ import ModalPaymentDataUpdate from '../../profile/components/ModalPaymentDataUpd
 import { Link, useNavigate } from 'react-router-dom';
 import ModalUpdateDataUser from '../../profile/components/ModalUpdateDataUser';
 import TicketCard from '../components/TicketCard';
+import useMyTickets from '../services/useMyTickets';
 interface DashboardProps {
     user: any;
 }
@@ -44,6 +45,7 @@ export default function MyTicketMainPage() {
     const [openUserModal, setOpenUserModal] = useState(false)
     const [Id, setId] = useState("")
     const availableBalance = 2847.50; // This would come from your backend
+    const { myTickets, loader } = useMyTickets()
     const formattedValue = new Intl.NumberFormat('pt-AO', {
         style: 'currency',
         currency: 'AOA'
@@ -107,9 +109,10 @@ export default function MyTicketMainPage() {
                             <div>
                                 <div className='flex items-center'>
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                                    <h1 className="text-2xl font-bold text-gray-900">Minhas Fichas</h1>
+                                    <h1 className="text-2xl font-bold text-gray-900 text-[13px] md:text-[17px]">Minhas Fichas</h1>
+
                                 </div>
-                                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4 ">
@@ -143,19 +146,33 @@ export default function MyTicketMainPage() {
             </header>
             <div className='flex flex-col items-center justify-center'>
                 <div className='w-11/12 md:w-7/12 flex justify-end'>
-                    <button className='bg-handcapp_color text-white rounded p-3 flex cursor-pointer mt-4'>Bater Ficha
+                    <button className='bg-handcapp_color text-white rounded p-3 flex cursor-pointer mt-4' onClick={(()=>navegate("suggest"))}>Bater Ficha
                         <Plus />
                     </button>
                 </div>
-                <div className='w-full flex flex-col  items-center md:w-4/12  md:flex md:flex-row md:flex-wrap md:justify-between'>
+                <div className='w-full flex flex-col  items-center md:w-5/12  md:flex md:flex-row md:flex-wrap md:justify-between'>
                     {
-                        Array(10).fill(null).map((_, index) => (
-                            <TicketCard />
+                        myTickets?.map((item) => (
+
+                            <TicketCard
+                                row={item}
+                                key={String(item?.id)}
+                                number={item.number}
+                                amount_to_invest={item.amount_to_invest}
+                                earn={item.earn}
+                                odd={item.odd}
+                                start_at={item.start_at}
+                                views_count={item.views_count}
+                                affiliate_code={item.affiliate_code}
+                                bethouse={item.bethouse}
+                            />
+
                         ))
                     }
                 </div>
             </div>
             {loaderControl && <Loader />}
+            {loader && <Loader />}
         </div>
     );
 }

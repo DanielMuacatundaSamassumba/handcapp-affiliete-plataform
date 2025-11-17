@@ -11,7 +11,9 @@ import {
   Ticket,
   Pencil,
   ArrowLeft,
-  Camera
+  Camera,
+  Plus,
+  PlusCircle
 } from 'lucide-react';
 import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
@@ -90,13 +92,9 @@ export default function ProfileMainPage() {
     // Aqui você poderia adicionar uma notificação de sucesso
   };
 
-  const handleCopyReferralLink = () => {
-    const link = `https://exemplo.com/ref/${"user.referralCode"}`;
-    navigator.clipboard.writeText(link);
-    // Aqui você poderia adicionar uma notificação de sucesso
-  };
 
- console.log("eu", myData)
+
+  console.log("eu", myData)
   const navegate = useNavigate()
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,9 +106,9 @@ export default function ProfileMainPage() {
               <div>
                 <div className='flex items-center'>
                   <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                  <h1 className="text-2xl font-bold text-gray-900">Perfil</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 text-[13px] md:text-[17px]">Perfil</h1>
                 </div>
-                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4 ">
@@ -119,9 +117,10 @@ export default function ProfileMainPage() {
                   <ul className='flex'>
 
 
-                  <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
-                                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
-                                        <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
+                    <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
+                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
+                    <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
+                    <Link to={"/my-tickets"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Minhas Fichas</li></Link>
 
                   </ul>
                 </nav>
@@ -142,119 +141,119 @@ export default function ProfileMainPage() {
         </div>
       </header>
       <div className='flex flex-col items-center justify-center'>
-        <div className='bg-white mt-10 p-5 shadow-md rounded w-11/12 md:w-6/12 lg:w-1/3 border'>
-          <div className=' flex items-center '>
-            <div className='border-4 border-handcapp_color relative  rounded-full'>
-              <img src={myData?.image_path  ? myData?.image_path: images.handcappIcon  } alt="image-profile" className='w-20 h-20 rounded-full ' />
-                <div className='absolute top-[40px] left-[55px] '>
-                <Camera className='text-handcapp_color cursor-pointer'
-                  onClick={() => setOpenUploudModal(!openUploudModal)}
-                />
+        <div className='w-full  '>
+          <div className=' flex flex-col-reverse  items-center md:flex  md:flex-row w-full mt-10 md:justify-center '>
+            <div className='w-11/12 mt-10 md:w-1/2 bg-white h-[500px] shadow-md  rounded-xl'>
+              <div className='flex  items-center p-5  justify-between'>
+                <div>
+                  <h1 className='font-semibold text-[22px]'>Informações Pessoais</h1>
+                  <p className='text-zinc-500 text-[12px]'>Gere as suas  Informações Pessois Aqui.</p>
+
                 </div>
-            </div>
-            <div className='ml-4' >
-              <p className='text-[17px]'>{myData?.name}</p>
-              <p className='text-zinc-400'>{myData?.phone}</p>
-            </div>
+                <div className='flex items-center cursor-pointer' onClick={() => setOpenUserModal(true)}>
+                  <Pencil className='text-handcapp_color' />
+                  <span className='font-semibold text-handcapp_color ml-2'>Editar</span>
+                </div>
+              </div>
 
-          </div>
-          <span className='border-b border-zinc-300 block mt-2'></span>
-          <div className=' flex justify-between border-b border-zinc-300 p-4 '>
-            <p className='text-zinc-400'>Nome</p>
-            <p className='text-zinc-400'>{myData?.name}</p>
-
-          </div>
-          <div className=' flex justify-between border-b border-zinc-300 p-4 '>
-            <p className='text-zinc-400'>Email</p>
-            <p className='text-zinc-400'>{myData?.email ? myData?.email : "N/A"}</p>
-
-          </div>
-          <div className=' flex justify-between border-b border-zinc-300 p-4 '>
-            <p className='text-zinc-400'>Endereço</p>
-            <p className='text-zinc-400'>{myData?.address ? myData?.address : "N/A"}</p>
-
-          </div>
-
-
-          <div className='mt-4 flex justify-end'>
-            <button className='bg-handcapp_color text-white rounded p-2'
-             onClick={()=>setOpenUserModal(true)}
-            >Alterar Dados Pessoais</button>
-            <button className='bg-handcapp_color text-white rounded p-2 ml-4'
-             onClick={()=>setOpenUserModal(true)}
-            >Alterar Palavra-passe</button>
-          </div>
-        </div>
-        <div className=' bg-white p-5 mt-2 shadow-md  w-11/12 md:w-6/12 lg:w-1/3'>
-          <div className='flex justify-between items-center'>
-            <p className='text-2xl  font-bold text-zinc-500 '>Dados Bancários</p>
-            <button className='text-white bg-handcapp_color p-2 rounded' onClick={() => setOpenAddModal(!openAddModal)}>Adicionar</button>
-          </div>
-          <span className='border block border-dashed mt-3 '></span>
-          <div className='flex justify-between items-center'>
-            <div>
-              {
-                myPaymentData && myPaymentData.map(item => (
-                  <div key={item.id}>
-                    {
-                      item.payment_method.short_name != PaymentDataEnum.MCX ?
-                        <div>
-                          <p className='text-zinc-400 text-xl mt-2  font-semibold'>IBAN</p>
-                          <div className='flex items-center'>
-                            <p className='text-zinc-400 text-xl mt-2'>{item.reference}</p>
-                            <Pencil className='w-20 text-zinc-400 cursor-pointer'
-                              onClick={() => {
-                                setUpdateOpenModal(true)
-                                setId(item.id)
-                                setReference(item.reference)
-                                setPaymentDataId(item.payment_method.id)
-                              }}
-                            />
-                          </div>
-                        </div>
-                        : ""
-                    }
+              <div className='border border-t-[0.2px] -mt-4'></div>
+              <div className=''>
+                <div className='flex justify-between'>
+                  <div className='p-5'>
+                    <label className='text-[14px]  text-zinc-500'>Nome Completo</label>
+                    <h1 className='mt-2'>  {
+                      myData?.name
+                    }</h1>
                   </div>
-                ))
-              }
-            </div>
-
-          </div>
-          <div className='flex justify-between items-center'>
-            <div>
-              {
-                myPaymentData && myPaymentData.map(item => (
-                  <div key={item.id}>
-                    {
-                      item.payment_method.short_name != PaymentDataEnum.TRANSFER ?
-                        <div >
-                          <p className='text-zinc-400 text-xl mt-2 font-semibold'>Express</p>
-                          <div className='flex items-center'>
-                            <p className='text-zinc-400 text-xl mt-2'>{item.reference}</p>
-                            <Pencil className='w-20 text-zinc-400 cursor-pointer'
-                              onClick={() => {
-
-                                setId(item.id)
-                                setReference(item.reference)
-                                setPaymentDataId(item.payment_method.id),
-                                  setUpdateOpenModal(true)
-                              }}
-                            />
-                          </div>
-                        </div>
-                        : ""
-                    }
+                  <div className='p-5'>
+                    <label className='text-[14px]  text-zinc-500'>Número de Telefone</label>
+                    <h1 className='mt-2'>  {
+                      myData?.phone
+                    }</h1>
                   </div>
-                ))
-              }
+                </div>
+                <div className='flex justify-between'>
+                  <div className='p-5'>
+                    <label className='text-[14px]  text-zinc-500'>Email</label>
+                    <h1 className='mt-2'>  {
+                      myData?.email ? myData?.email : "N/A"
+                    }</h1>
+                  </div>
+                  <div className='p-5'>
+                    <label className='text-[14px]  text-zinc-500'>Endereço</label>
+                    <h1 className='mt-2'>  {
+                      myData?.address ? myData?.address : "N/A"
+                    }</h1>
+                  </div>
+                </div>
+
+                <div className='flex'>
+                  <div className='p-5'>
+                    <label className='text-[14px]  text-zinc-500'>Nome de Batedor de Fichas</label>
+                    <h1 className='mt-2'>  {
+                      myData?.beater_ticket_name ? myData?.beater_ticket_name : "N/A"
+                    }</h1>
+                  </div>
+                </div>
+              </div>
 
             </div>
+            <div className=' w-full md:w-1/3 flex  flex-col  items-center'>
+              <div className='w-11/12 bg-white h-[240px] shadow-md rounded-xl mt-8 flex justify-center  items-center'>
+                <div className='flex flex-col items-center justify-center '>
+                  <div className='border border-4 cursor-pointer border-handcapp_color h-[120px] w-[120px]  flex justify-center items-center rounded-full'>
+                    <img
+                      src={myData?.image_path ? myData?.image_path : images.handcappIcon} alt="profile" className='h-[105px] w-[105px] rounded-full' />
+                  </div>
+                    <div className='bg-handcapp_color  text-white rounded-full p-2  absolute cursor-pointer'
+                     onClick={()=>setOpenUploudModal(true)}
+                    >
+                       <Camera/>
+                    </div>
+                  <div className='flex justify-center w-full '>
+                    <h1 className=' text-[18px] text-center  font-semibold p-2 text-zinc-800'>{myData?.name}</h1>
 
+                  </div>
+                  <h1 className=' text-[14px] text-zinc-500'>Afiliado</h1>
+                </div>
+              </div>
+              <div className='w-11/12 bg-white h-[230px] p-2 shadow-md rounded-xl mt-8'>
+                <div className='flex items-center  justify-between'>
+                  <h1 className='text-[18px]   font-semibold  text-zinc-800 mt-2'>Detalhes da Conta Bancária</h1>
+                  <Pencil className='w-5 text-zinc-400  cursor-pointer' onClick={() => {
+                    if (myPaymentData && myPaymentData.length > 0) {
+                      const firstPayment = myPaymentData[0];
+
+                      setId(firstPayment.id || "");
+                      setReference(firstPayment.reference || "");
+                      setPaymentDataId(firstPayment.payment_method?.id || "");
+                      setUpdateOpenModal(true);
+                    }
+                  }} />
+                </div>
+                <div className='border border-t-[0.1px]  mt-4 '>
+
+                </div>
+                <span className='text-[14px]  text-zinc-400 mt'>IBAN</span>
+                <h1 className='mt-1 text-zinc-600 text-[18px] '> AO06{myPaymentData && myPaymentData[0]?.reference
+                  ? myPaymentData[0].reference.match(/.{1,4}/g)?.join(" ")
+                  : ""}</h1>
+                <div className='flex justify-center mt-10'>
+                  {myPaymentData && myPaymentData[0]?.reference ?
+                    "" : <button className='bg-handcapp_color w-full p-3  flex text-white rounded'
+                     onClick={()=>setOpenAddModal(!openAddModal)}
+                    >
+                      <PlusCircle className='ml-2 mr-2' />
+                      Adicionar detalhes da Conta</button>
+                  }
+
+                </div>
+              </div>
+            </div>
           </div>
-        {openUploudModal &&  <UplodImage image={myData?.image_path  || "" } setOpen={setOpenUploudModal}  open={openUploudModal}/>}
         </div>
         <ModalPaymentData open={openAddModal} setOpen={setOpenAddModal} />
-
+        {openUploudModal && <UplodImage image={myData?.image_path || ""} setOpen={setOpenUploudModal} open={openUploudModal} />}
         <ModalUpdateDataUser open={openUserModal} setOpen={setOpenUserModal} />
         <ModalPaymentDataUpdate
           open={UpdateOpenModal}

@@ -17,24 +17,15 @@ export default function AffiliatesList() {
         <div className="space-y-4">
           {data?.map((affiliate, index) => (
             index <= 2 && (
-              <div key={affiliate?.user_affiliated?.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
+              <div key={affiliate?.user_affiliated?.id}
+                 onClick={()=>navegate("/users/personal",  {  state:{id:affiliate?.user_affiliated?.id}})}
+              className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all">
               <div className="flex items-center space-x-4">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                   {
-                     affiliate?.user_affiliated?.image_path ? (
-                      <img
-                      src={affiliate?.user_affiliated?.image_path}
-                      alt={affiliate?.user_affiliated?.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                     ) : (
-                      <User className="w-5 h-5 text-blue-600" />
-                     )
-                   }
+                  <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">{affiliate?.user_affiliated?.name}</h3>
-                  <p className="text-sm text-gray-600">{affiliate?.user_affiliated?.name}</p>
+                  <h3 className="font-medium text-gray-900">{affiliate?.user_affiliated?.id.slice(0,7)}</h3>
                   <div className="flex items-center space-x-4 mt-1">
                     <div className="flex items-center text-xs text-gray-500">
                       <Calendar className="w-3 h-3 mr-1" />
@@ -49,12 +40,12 @@ export default function AffiliatesList() {
               </div>
               <div className="text-right">
                 {/*<p className="font-semibold text-green-600">{affiliate.totalEarnings}</p>*/}
-                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                  affiliate?.user_affiliated?.status === '1' 
-                    ? 'bg-green-100 text-green-800' 
+               <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                  String(affiliate?.user_affiliated?.subscriptions.filter(item => item.status == "1").length) === '1'
+                    ? 'bg-green-100 text-green-800'
                     : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {        affiliate?.user_affiliated?.status === '1' ? "Activo":"Inactivo" }
+                  }`}>
+                  {                   String(affiliate?.user_affiliated?.subscriptions.filter(item => item.status == "1").length) === '1' ? "Activo" : "Inactivo"}
                 </span>
               </div>
             </div>
@@ -63,7 +54,7 @@ export default function AffiliatesList() {
         </div>
         
         <div className="mt-6 text-center">
-          <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors" onClick={()=>navegate('/users')}>
+          <button className="text-blue-600  hover:underline hover:text-blue-700 font-medium transition-colors" onClick={()=>navegate('/users')}>
             Ver todos os afiliados
           </button>
         </div>

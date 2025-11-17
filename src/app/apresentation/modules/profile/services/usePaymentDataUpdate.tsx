@@ -24,8 +24,12 @@ export default function usePaymentDataUpdate() {
             const response = await api.put(
                 `/user/payment-data/update/${formData.id}`,
                 formData,
-                headersConfig()
+                {
+                    ...headersConfig(),   // espalha os headers que você definiu
+                    withCredentials: true // envia cookies/sessão se necessário
+                }
             );
+
             console.log(response)
             setLoaderControl(false)
             Swal.fire({

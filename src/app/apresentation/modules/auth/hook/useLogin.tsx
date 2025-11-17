@@ -54,8 +54,8 @@ export default function useLogin() {
             setLoaderControl(false)
             Alert({
                 text: "Erro  ao tentar  fazer Login",
-                title: error.response.data.message || "Erro ao Realizar o Login",
-                icon: "error"
+                title: error.response.data.message ,
+                icon: "info"
             })
              console.log(formData)
         }

@@ -13,7 +13,8 @@ export default function useUpdateData() {
         name: "",
         email: "",
         phone: "",
-        address: "N/A"
+        address: "",
+        beater_ticket_name: ""
 
     })
 
@@ -31,7 +32,14 @@ export default function useUpdateData() {
             const data_user = decrypt(user || "")
             const userLoggin = JSON.parse(data_user)
             const response = await api.put(`user/update/data/${userLoggin?.id}`,
-                formData,
+                {
+                    name: formData.name ||   myData?.name,
+                    email: formData.email ||   myData?.email,
+                    phone:  formData.phone ||   myData?.phone,
+                    address:  formData.address ||   myData?.address,
+                    beater_ticket_name:  formData.beater_ticket_name ||   myData?.beater_ticket_name
+
+                },
                 headersConfig()
             )
             console.log(response)
@@ -43,13 +51,13 @@ export default function useUpdateData() {
                 customClass: {
                     container: "swal2-container "
                 }
-            }).then((res)=>{
-                if(res.isConfirmed){
-                     window.location.reload()
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    window.location.reload()
                 }
             })
 
-        } catch (error:any) {
+        } catch (error: any) {
             console.error(error)
             Swal.fire({
                 title: "Sucesso ",

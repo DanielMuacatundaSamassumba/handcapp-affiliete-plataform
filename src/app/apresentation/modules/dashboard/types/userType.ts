@@ -8,8 +8,10 @@ export interface UserData {
     affiliate_code: string;
     address:string
     created_at: string;
+    affiliate_commission:string
     permissions: string[];
-    image_path:string
+    image_path:string,
+    beater_ticket_name:string
   }
   
   export interface UserPoint {

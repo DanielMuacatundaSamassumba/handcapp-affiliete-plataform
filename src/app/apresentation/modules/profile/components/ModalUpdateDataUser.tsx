@@ -19,7 +19,8 @@ export default function ModalUpdateDataUser(params: UserModalUpdateType) {
              name: myData?.name || "",
              email:myData?.email  || "",
              address:myData?.address || "",
-             phone:myData?.phone || ""
+             phone:myData?.phone || "",
+             beater_ticket_name:myData?.beater_ticket_name || ""
          })
      }, [myData])
     return (
@@ -78,6 +79,17 @@ export default function ModalUpdateDataUser(params: UserModalUpdateType) {
                                 className='p-2 rounded mt-2 border outline-none'
                                 type="text" placeholder='Endereço'
                                 defaultValue={myData?.address}
+                            />
+                        </div>
+                         <div className='flex flex-col mt-2'>
+                            <label htmlFor="">Nome de Batedor de Ficha</label>
+                            <input
+                            onChange={handleChangeValue}
+                                name='beater_ticket_name'
+                                value={formData.beater_ticket_name}
+                                className='p-2 rounded mt-2 border outline-none'
+                                type="text" placeholder='Nome de Batedor de Ficha'
+                                defaultValue={myData?.beater_ticket_name}
                             />
                         </div>
                         <div className='w-full'>

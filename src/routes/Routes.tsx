@@ -11,6 +11,10 @@ import TransationsMainPage from '@/app/apresentation/modules/transation/pages/Tr
 import UserMainPage from '@/app/apresentation/modules/users/pages/UserMainPage'
 import MyTicketMainPage from '@/app/apresentation/modules/tickets/pages/MyTicketMainPage'
 import SugestTicket from '@/app/apresentation/modules/tickets/pages/SugestTicket'
+import NotFoundedPage from '@/app/apresentation/modules/error-pages/NotFoundedPage'
+import PersonalTicketPage from '@/app/apresentation/modules/tickets/pages/PersonalTicketPage'
+import PersonalPageUserDetails from '@/app/apresentation/modules/users/pages/PersonalPageUserDetails'
+import ErrorPage from '@/app/apresentation/modules/error-pages/ErrorPage'
 export default function Routes() {
      const DashboardMainPAgeAuth = AuthCheck(DashboardMainPage)
      const ProfileMainPageAuth = AuthCheck(ProfileMainPage)
@@ -20,6 +24,9 @@ export default function Routes() {
      const UserMainPageAuth = AuthCheck(UserMainPage)
      const MyTicketMainPagePageAuth = AuthCheck(MyTicketMainPage)
      const SugestTicketPageAuth = AuthCheck(SugestTicket)
+     const PersonalTicketPageAuth = AuthCheck(PersonalTicketPage)
+     const PersonalPageUserDetailsPageAuth= AuthCheck(PersonalPageUserDetails)
+     //const Auth = AuthCheck(SugestTicket)
      const routes = createBrowserRouter([
           {
                path: "/",
@@ -27,7 +34,9 @@ export default function Routes() {
                     <PublicRoutes>
                          <LogiMainPage />
                     </PublicRoutes>
-               )
+               ),
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "/create/affiliete-account",
@@ -35,40 +44,74 @@ export default function Routes() {
                     <PublicRoutes>
                          <CreateAccountMainPage />
                     </PublicRoutes>
-               )
+               ),
+               errorElement:<ErrorPage/>
           },
           {
                path: "dashboard",
-               element: <DashboardMainPAgeAuth />
+               element: <DashboardMainPAgeAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "profile",
-               element: <ProfileMainPageAuth />
+               element: <ProfileMainPageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "transation-resume",
-               element: <TransationResumePageAuth />
+               element: <TransationResumePageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "withdrawal",
-               element: <WithdrawalPageAuth />
+               element: <WithdrawalPageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "history",
-               element: <TransationsMainPageAuth />
+               element: <TransationsMainPageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "users",
-               element: <UserMainPageAuth />
+               element: <UserMainPageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "my-tickets",
-               element: <MyTicketMainPagePageAuth />
+               element: <MyTicketMainPagePageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
           {
                path: "my-tickets/suggest",
-               element: <SugestTicketPageAuth />
+               element: <SugestTicketPageAuth />,
+                              errorElement:<ErrorPage/>
+
           },
+          {
+               path: "my-tickets/personal-ticket",
+               element: <PersonalTicketPageAuth />,
+                              errorElement:<ErrorPage/>
+
+          },
+              {
+               path: "users/personal",
+               element: <PersonalPageUserDetailsPageAuth />,
+                              errorElement:<ErrorPage/>
+
+          },
+          {
+               path: "*",
+               element: <NotFoundedPage />
+          },
+
      ])
      return {
           routes

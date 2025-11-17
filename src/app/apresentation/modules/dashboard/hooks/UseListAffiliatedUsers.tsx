@@ -14,6 +14,7 @@ export default function UseListAffiliatedUsers() {
             const response = await api.get("/affiliate-reference/list", headersConfig())
        setData(response.data.data)
        setDataUsers(response.data.data)
+               console.log(response.data.data)
        setLoaderControl(false)
        console.log(response.data.data)
         } catch (error) {

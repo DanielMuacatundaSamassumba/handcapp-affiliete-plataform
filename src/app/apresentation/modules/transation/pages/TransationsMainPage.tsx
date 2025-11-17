@@ -60,7 +60,7 @@ export default function TransationsMainPage() {
         {
             title: 'Total de Lucros Sacado',
             value: `${formattedValue ?? 0}`,
-            subtitle: 'Este mês',
+            subtitle: '',
             icon: DollarSign,
             color: 'text-green-600',
             trend: { value: '12%', isPositive: true }
@@ -108,9 +108,11 @@ export default function TransationsMainPage() {
                             <div>
                                 <div className='flex items-center'>
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                                    <h1 className="text-2xl font-bold text-gray-900">Histórico</h1>
+                                    <h1 className="text-2xl font-bold text-gray-900 text-[13px] md:text-[17px]">Histórico</h1>
+
+                                    <h1 className="text-2xl font-bold text-gray-900"></h1>
                                 </div>
-                                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4 ">

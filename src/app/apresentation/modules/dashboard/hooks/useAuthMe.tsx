@@ -12,6 +12,7 @@ export default function useAuthMe() {
         try {
             const response = await api.get("/auth/me", headersConfig())
             setMyData(response.data.data)
+                   console.log(response.data.data)
             setLoaderControl(false)
         } catch (error: any) {
               if(error.status == 401){

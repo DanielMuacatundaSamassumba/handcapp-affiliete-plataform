@@ -2,6 +2,7 @@ import { api } from '@/app/ infrastructure/api/api'
 import { headersConfig } from '@/app/utils/HeaderConfig'
 import { useRef, useState } from 'react'
 import { decrypt } from '../../auth/utils/CryptoUtils'
+import Swal from 'sweetalert2'
 
 export default function useUploud() {
     const file = useRef<HTMLInputElement | null>(null)
@@ -9,13 +10,12 @@ export default function useUploud() {
     const handleUploud = async () => {
         setLoader(true)
         try {
-            setLoader(true);
 
             if (file.current?.files?.[0]) {
                 const formData = new FormData();
                 formData.append("profile_image", file.current.files[0]);
-                    const token = localStorage.getItem("auth_token");
-                    const token_decrypted = decrypt(token || "");
+                const token = localStorage.getItem("auth_token");
+                const token_decrypted = decrypt(token || "");
                 const response = await api.post(
                     "/user/uploud/image/profile",
                     formData,
@@ -27,6 +27,17 @@ export default function useUploud() {
                     }
                 );
                 console.log("Upload feito com sucesso:", response.data);
+                setLoader(false)
+                Swal.fire({
+                    title: "Sucesso",
+                    text: "Imagem Actualizada com  Sucesso",
+                    icon: "success"
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        window.location.reload()
+                    }
+                });
+
             } else {
                 console.warn("Nenhum arquivo selecionado.");
             }

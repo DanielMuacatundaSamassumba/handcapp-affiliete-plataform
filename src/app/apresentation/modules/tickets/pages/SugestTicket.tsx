@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import {
     DollarSign,
     Users,
@@ -11,7 +11,9 @@ import {
     Ticket,
     Pencil,
     ArrowLeft,
-    Plus
+    Plus,
+    Trash,
+    Trash2
 } from 'lucide-react';
 import WithdrawalPage from '@/components/withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
@@ -30,6 +32,9 @@ import ModalUpdateDataUser from '../../profile/components/ModalUpdateDataUser';
 import TicketCard from '../components/TicketCard';
 import Select from "react-select"
 import { ActionMeta, InputActionMeta } from 'react-select';
+import useLeagueByDate from '../services/useLeagueByDate';
+import useAuthHandcappApi from '@/app/hooks/useAuthHandcappApi';
+import { ModalBeaterTicketName } from '../components/ModalBeaterTicketName';
 interface DashboardProps {
     user: any;
 }
@@ -44,117 +49,48 @@ export default function SugestTicket() {
     const [PaymentDataId, setPaymentDataId] = useState("")
     const [UpdateOpenModal, setUpdateOpenModal] = useState(false)
     const [openUserModal, setOpenUserModal] = useState(false)
+    const [modalBeatTicketName, setModalBeatTicketName] = useState(false)
     const [Id, setId] = useState("")
     const availableBalance = 2847.50; // This would come from your backend
     const formattedValue = new Intl.NumberFormat('pt-AO', {
         style: 'currency',
         currency: 'AOA'
     }).format(myData?.point.value ?? 0);
-    const stats = [
-        {
-            title: 'Total de Lucros',
-            value: `${formattedValue}`,
-            subtitle: 'Este mês',
-            icon: DollarSign,
-            color: 'text-green-600',
-            trend: { value: '12%', isPositive: true }
-        },
-        {
-            title: 'Total de Lucros Sacado',
-            value: `${formattedValue ?? 0}`,
-            subtitle: 'Este mês',
-            icon: DollarSign,
-            color: 'text-green-600',
-            trend: { value: '12%', isPositive: true }
-        },
-        {
-            title: 'Afiliados Ativos',
-            value: `${data?.length ?? 0}`,
-            subtitle: 'Total de referidos',
-            icon: Users,
-            color: 'text-blue-600',
-            trend: { value: '8%', isPositive: true }
-        },
-        {
-            title: 'Total de Fichas',
-            value: '32',
-            subtitle: 'Últimos 30 dias',
-            icon: Ticket,
-            color: 'text-purple-600',
-            trend: { value: '0.5%', isPositive: true }
-        },
 
-    ];
 
-    const handleCopyReferralCode = () => {
+    const {
+        leaguesData,
+        setDateFilter,
+        loadingProcess,
+        setLeagueSelected,
+        leagueselected,
+        gameSelected,
+        setGameSelected,
+        gameData, handleAddGame,
+        games,
+        merketData,
+        marketSelected,
+        setMerketSelected,
+        prodictionData,
+        handleFilterPreddits,
+        setPrognosticSelected,
+        handleDeleteGame,
+        handleSubmit
+    } = useLeagueByDate()
 
-        // Aqui você poderia adicionar uma notificação de sucesso
-    };
-    const games = [
-        {
-          id: "1",
-          homeTeam: {
-            name: "Manchester City",
-            logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
-          },
-          awayTeam: {
-            name: "Real Madrid",
-            logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
-          },
-          date: "2025-10-20",
-          time: "20:00",
-          stadium: "Etihad Stadium",
-          status: "Ao vivo",
-        },
-        {
-          id: "2",
-          homeTeam: {
-            name: "Barcelona",
-            logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
-          },
-          awayTeam: {
-            name: "Liverpool",
-            logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
-          },
-          date: "2025-10-22",
-          time: "21:00",
-          stadium: "Camp Nou",
-          status: "Agendado",
-        },
-        {
-          id: "3",
-          homeTeam: {
-            name: "Bayern Munich",
-            logo: "https://upload.wikimedia.org/wikipedia/en/1/1f/FC_Bayern_München_logo_%282017%29.svg",
-          },
-          awayTeam: {
-            name: "Arsenal",
-            logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
-          },
-          date: "2025-10-25",
-          time: "19:30",
-          stadium: "Allianz Arena",
-          status: "Finalizado",
-        },
-      ];
- const options = games.map(game=>{
-      return{value:game.id,label:`${game.homeTeam.name} vs ${game.awayTeam.name} `}
- })
-  const [ allGames , setAllGames] = useState({
-      game:"",
-      id:""
-  })
-  const handleAddGame = (e:any)=>{
-     const { name, value } = e.target
-      console.log({[name]:value})
-  }
-    const handleCopyReferralLink = () => {
-        const link = `https://exemplo.com/ref/${"user.referralCode"}`;
-        navigator.clipboard.writeText(link);
-        // Aqui você poderia adicionar uma notificação de sucesso
-    };
+    const optionsLeagues = leaguesData?.map(league => {
+        return { value: String(league.id,), label: `${league.name} ` }
+    })
+    const optionsGames = gameData?.map(game => ({
+        value: game,
+        label: `${game.teams.home.name} vs ${game.teams.away.name}`,
+    }));
 
-    const [selected, setSelected] = useState<{ value: string; label: string } | null>(null);
+     useEffect(()=>{
+     if (myData?.beater_ticket_name === null) {
+        setModalBeatTicketName(true)
+    }
+   },[myData] )
 
     const navegate = useNavigate()
     return (
@@ -169,7 +105,7 @@ export default function SugestTicket() {
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
                                     <h1 className="text-2xl font-bold text-gray-900">Bater Ficha</h1>
                                 </div>
-                                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4 ">
@@ -205,29 +141,130 @@ export default function SugestTicket() {
                 <div className='flex flex-col bg-white shadow-md mt-5 rounded w-11/12 p-5 md:w-5/12'>
                     <div className='w-full flex flex-col mt-4'>
                         <label className='mt-2 mb-2'>Data</label>
-                        <input type="date" className='border p-2 rounded-md' />
+                        <input type="date" className='border p-2 rounded-md' onChange={(e) => setDateFilter(String(e.target.value))} />
                     </div>
-                    <div className='w-full flex flex-col mt-2'>
-                        <label className='mt-2 mb-2'>Liga</label>
-                        <Select
-                            className=" p-2 rounded-md  w-full"
-                            options={options}
-                            value={selected}
-                            onChange={(newValue) => setSelected(newValue)}
-                        />
-                    </div>
-                    <div className='w-full flex flex-col mt-2'>
-                        <label className='mt-2 mb-2'>Jogo</label>
-                        <Select
-                            className=" p-2 rounded-md  w-full"
-                            options={options}
-                            value={selected}
-                            onChange={(newValue) => setSelected(newValue)}
-                        />
-                    </div>
+
+                    {
+                        leaguesData && leaguesData?.length > 0 ?
+                            <div className='w-full flex flex-col mt-2'>
+                                <label className='mt-2 mb-2'>Liga</label>
+                                <Select
+                                    className=" p-2 rounded-md  w-full"
+                                    options={optionsLeagues}
+                                    value={leagueselected}
+                                    onChange={(newValue) => setLeagueSelected(newValue)}
+                                />
+                            </div>
+                            : ""
+                    }
+
+
+
+                    {
+                        leagueselected?.label != "" ?
+                            <div className='w-full flex flex-col mt-2'>
+                                <label className='mt-2 mb-2'>Jogo</label>
+                                <Select
+                                    className=" p-2 rounded-md  w-full"
+                                    options={optionsGames}
+                                    value={gameSelected}
+                                    onChange={(newValue) => setGameSelected(newValue)}
+                                />
+                            </div>
+
+                            : ""
+                    }
+
+                    {
+                        gameSelected?.label != null ?
+                            <div className='w-full flex flex-col mt-2 px-2'>
+                                <label htmlFor="">Mercado</label>
+                                <select className='border p-2 rounded outline-none  w-full mt-3' onChange={(e) => handleFilterPreddits(e.target.value)}>
+                                    <option value="">Selecione O mercado</option>
+                                    {
+                                        merketData?.map(item => (
+                                            <option key={item.id} value={item.id} >   {item.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+
+                            : ""
+                    }
+
+                    {
+                        prodictionData && prodictionData?.length > 0 ?
+                            <div className='w-full flex flex-col mt-2 px-2'>
+                                <label htmlFor="">Prognostico</label>
+                                <select className='border p-2 rounded outline-none  w-full mt-3' onChange={(e) => {
+                                    const selected = JSON.parse(e.target.value);
+                                    setPrognosticSelected(selected);
+                                }
+                                }>
+                                    <option value="">Selecione O Prognostico</option>
+                                    {
+                                        prodictionData?.map((item: any) => (
+
+                                            <option key={item.id} value={JSON.stringify(item)}>   {item.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            : ""
+                    }
+
+                    {
+                        gameSelected?.label != null ?
+                            <div className='w-full flex flex-col mt-2'>
+                                <button
+                                    onClick={() => handleAddGame()}
+                                    className='bg-handcapp_color text-white rounded p-2  cursor-pointer'>Adicionar Jogo</button>
+                            </div>
+
+                            : ""
+                    }
                 </div>
+                <div className='w-11/12 md:w-5/12  '>
+                    {(games ?? []).map((game, index) => (
+                        <div key={index} className='w-full'>
+                            <div className='flex flex-col   justify-between w-full bg-zinc-300 p-2 rounded mt-2'>
+                                <div className='flex justify-between'>
+                                    <p className='font-bold text-sm'>{game.game_id.value.league.name}</p>
+                                    <p className='text-[11px]'>{game.game_id.value.time.datetime}</p>
+                                </div>
+                                <div className='flex justify-evenly'>
+                                    <div className='flex flex-col items-center justify-center'>
+                                        <img src={game.game_id.value.teams.home.img} className='w-12' alt="home-image" />
+                                        <p className='text-[11px] font-semibold mt-2'>{game.game_id.value.teams.home.name} </p>
+                                    </div>
+                                    <div className='w-1/3 text-center'>
+                                        <p className='text-[15px]  text-center font-semibold'>{game.prognostic}</p>
+                                    </div>
+                                    <div className='flex flex-col items-center justify-center'>
+                                        <img src={game.game_id.value.teams.away.img} className='w-12' alt="away-image" />
+                                        <p className='text-[11px] font-semibold mt-2'>{game.game_id.value.teams.away.name} </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='w-full flex justify-end'>
+                                <button className='bg-handcapp_color text-white p-2 rounded cursor-pointer mt-2' onClick={() => handleDeleteGame(game.id)}>
+                                    <Trash2 />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                {
+                    games.length > 0 ?
+                        <div className='w-11/12 md:w-5/12'>
+                            <button className='bg-handcapp_color text-white w-full p-3 mt-2 rounded' onClick={() => handleSubmit()}>Sugerir Ficha</button>
+                        </div> : ""
+                }
+
             </div>
             {loaderControl && <Loader />}
+            {loadingProcess && <Loader />}
+            {modalBeatTicketName && <ModalBeaterTicketName />}
         </div>
     );
 }

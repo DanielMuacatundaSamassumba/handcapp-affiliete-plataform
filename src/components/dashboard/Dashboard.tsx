@@ -2,8 +2,6 @@ import { useState } from 'react';
 import {
   DollarSign,
   Users,
-  TrendingUp,
-  Eye,
   Copy,
   Share2,
   CreditCard,
@@ -13,7 +11,6 @@ import {
 import StatsCard from './StatsCard';
 import AffiliatesList from '../affiliates/AffiliatesList';
 import TransactionHistory from '../transactions/TransactionHistory';
-import WithdrawalPage from '../withdrawals/WithdrawalPage';
 import { images } from '@/app/constatnts/images';
 import AnchorTemporaryDrawer from '../Shared-Compoonents/MenuMobile';
 import useAuthMe from '@/app/apresentation/modules/dashboard/hooks/useAuthMe';
@@ -22,75 +19,91 @@ import UserAuthenticated from '../Shared-Compoonents/UserAuthenticated';
 import { Link, useNavigate } from 'react-router-dom';
 import useListMyTransation from '../utils/useListMyTransation';
 import useMyEarns from '@/app/apresentation/modules/dashboard/hooks/useMyEarns';
+import useMyTickets from '@/app/apresentation/modules/tickets/services/useMyTickets';
+import { getISOWeekNumber } from '@/app/apresentation/modules/dashboard/utils/WeekNumberFunction';
 interface DashboardProps {
   user: any;
 }
 
 export default function Dashboard() {
-  const {data }  =UseListAffiliatedUsers()
+  const { myTickets } = useMyTickets()
+  const ticketsWeekNumber = myTickets
+  ?.filter(item => 
+    getISOWeekNumber(new Date()) ===
+    getISOWeekNumber(item?.created_at || "")
+  )
+  .map(item => item.created_at);
+
+
+  console.log("ticket_number!", myTickets)
+  const { data } = UseListAffiliatedUsers()
   const [currentView, setCurrentView] = useState('dashboard');
-  const { myData}= useAuthMe()
-  const availableBalance = 2847.50; // This would come from your backend
-  console.log(myData)
-    const { myTransations } = useListMyTransation()
+  const { myData } = useAuthMe()
+  const availableBalance = 2847.50;
+  const { myTransations } = useListMyTransation()
   const formattedValue = new Intl.NumberFormat('pt-AO', {
     style: 'currency',
     currency: 'AOA'
   }).format(myData?.point.value ?? 0);
   const date = new Date();
-const { myEarns } = useMyEarns();
+  const { myEarns } = useMyEarns();
+  console.log("teste======>", myEarns)
+  // Formata a data de hoje
+  const todayFormatted = date.toLocaleDateString('pt-BR');
+  console.log("Data de hoje formatada:", todayFormatted);
+  // Cria uma data de ontem
+  const yesterday = new Date(date);
+  yesterday.setDate(date.getDate() - 1);
+  const yesterdayFormatted = yesterday.toLocaleDateString('pt-BR');
 
-// Formata a data de hoje
-const todayFormatted = date.toLocaleDateString('pt-BR');
+  // Filtra e soma os ganhos de hoje
+  const myEarnsToday = myEarns
+    ?.map((earn: any) =>
+      new Date(earn.created_at).toLocaleDateString('pt-BR') === todayFormatted
+    )
+    .reduce((acc: number, earn: any) => acc + parseFloat(earn.amount), 0) || 0;
+  console.log("Ganho de hoje:", myEarnsToday);
+  // Filtra e soma os ganhos de ontem
+  const myEarnsYesterday = myEarns
+    ?.filter((earn: any) =>
+      new Date(earn.created_at).toLocaleDateString('pt-BR') === yesterdayFormatted
+    )
+    .reduce((acc: number, earn: any) => acc + parseFloat(earn.amount), 0) || 0;
 
-// Cria uma data de ontem
-const yesterday = new Date(date);
-yesterday.setDate(date.getDate() - 1);
-const yesterdayFormatted = yesterday.toLocaleDateString('pt-BR');
+  const { dataUsers } = UseListAffiliatedUsers();
+  const userAffilatedWeek = dataUsers
+    ?.filter(item =>
+      getISOWeekNumber(new Date().toISOString()) ===
+      getISOWeekNumber(item.UserAffialtedData.created_at)
+    )
+    .map(item => item.UserAffialtedData.created_at) || [];
+  // Pega a data de hoje
+  const today = new Date();
 
-// Filtra e soma os ganhos de hoje
-const myEarnsToday = myEarns
-  ?.filter((earn: any) => 
-    new Date(earn.created_at).toLocaleDateString('pt-BR') === todayFormatted
-  )
-  .reduce((acc: number, earn: any) => acc + parseFloat(earn.value), 0) || 0;
+  // Calcula o primeiro dia da semana (segunda-feira)
+  const firstDayOfWeek = new Date(today);
+  const dayOfWeek = today.getDay(); // 0 = domingo, 1 = segunda, ...
+  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  firstDayOfWeek.setDate(today.getDate() - diffToMonday);
 
-// Filtra e soma os ganhos de ontem
-const myEarnsYesterday = myEarns
-  ?.filter((earn: any) => 
-    new Date(earn.created_at).toLocaleDateString('pt-BR') === yesterdayFormatted
-  )
-  .reduce((acc: number, earn: any) => acc + parseFloat(earn.value), 0) || 0;
+  // Normaliza para ignorar horário (comparar apenas datas)
+  firstDayOfWeek.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
 
-    const { dataUsers } = UseListAffiliatedUsers();
+  // Filtra os usuários criados entre segunda-feira e hoje
+  const usersThisWeek = dataUsers?.filter((user: any) => {
+    const createdAt = new Date(user.created_at);
+    return createdAt >= firstDayOfWeek && createdAt <= today;
+  }) || [];
 
-// Pega a data de hoje
-const today = new Date();
+  // Número total de usuários nesta semana
+  const totalUsersThisWeek = usersThisWeek.length;
 
-// Calcula o primeiro dia da semana (segunda-feira)
-const firstDayOfWeek = new Date(today);
-const dayOfWeek = today.getDay(); // 0 = domingo, 1 = segunda, ...
-const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
-firstDayOfWeek.setDate(today.getDate() - diffToMonday);
-
-// Normaliza para ignorar horário (comparar apenas datas)
-firstDayOfWeek.setHours(0, 0, 0, 0);
-today.setHours(23, 59, 59, 999);
-
-// Filtra os usuários criados entre segunda-feira e hoje
-const usersThisWeek = dataUsers?.filter((user: any) => {
-  const createdAt = new Date(user.created_at);
-  return createdAt >= firstDayOfWeek && createdAt <= today;
-}) || [];
-
-// Número total de usuários nesta semana
-const totalUsersThisWeek = usersThisWeek.length;
-
-console.log("Usuários cadastrados nesta semana:", dataUsers);
+  console.log("Usuários cadastrados nesta semana:", dataUsers);
   const stats = [
     {
       title: 'Total de Lucros',
-      value:`${formattedValue}`,
+      value: `${formattedValue}`,
       subtitle: '-',
       icon: DollarSign,
       color: 'text-green-600',
@@ -98,7 +111,7 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
     },
     {
       title: 'Ganho Hoje',
-      value:`${myEarnsToday ?? 0} Kz`,
+      value: `${myEarnsToday ?? 0} Kz`,
       subtitle: 'Ontem',
       icon: DollarSign,
       color: 'text-green-600',
@@ -106,19 +119,19 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
     },
     {
       title: 'Total de  Usuário',
-      value:`${dataUsers?.length ?? 0}`,
+      value: `${dataUsers?.length ?? 0}`,
       subtitle: 'Novos Usuários Nesta Semana',
       icon: Users,
       color: 'text-blue-600',
-      trend: { value: `${totalUsersThisWeek}`, isPositive: true }
+      trend: { value: `${userAffilatedWeek?.length}`, isPositive: true }
     },
     {
       title: 'Total de Fichas',
-      value: '32',
+      value: `${myTickets?.length}`,
       subtitle: 'Fichas Nesta Semana',
       icon: Ticket,
       color: 'text-purple-600',
-      trend: { value: '10', isPositive: true }
+      trend: { value: `${ticketsWeekNumber?.length}`, isPositive: true }
     },
 
   ];
@@ -133,7 +146,8 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
     navigator.clipboard.writeText(link);
     // Aqui você poderia adicionar uma notificação de sucesso
   };
- const navegate = useNavigate()
+  const navegate = useNavigate()
+
 
 
   return (
@@ -142,20 +156,20 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className='flex items-center space-x-4'>
-              <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
+              <img src={images.handcappIcon} alt="icon-handcapp" className='w-8 rounded  md:w-20 md:h-20 ' />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                <h1 className="text-2xl font-bold text-gray-900 text-[13px] md:text-[17px]">Dashboard</h1>
+                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4 ">
               <header className='hidden lg:block'>
                 <nav>
                   <ul className='flex'>
-                  <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
-                                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
-                                        <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
-                                        <Link to={"/my-tickets"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Minhas Fichas</li></Link>
+                    <Link to={"/dashboard"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>DashBoard</li></Link>
+                    <Link to={"/users"}>  <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Usuários</li></Link>
+                    <Link to={"/history"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Histórico</li></Link>
+                    <Link to={"/my-tickets"}>   <li className=' text-zinc-700  cursor-pointer text-[18px]  ml-4 '>Minhas Fichas</li></Link>
                   </ul>
                 </nav>
               </header>
@@ -167,8 +181,8 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
                 <CreditCard className="w-4 h-4" />
                 <span>Solicitar Saque</span>
               </button>
-              <UserAuthenticated/>
-              
+              <UserAuthenticated />
+
             </div>
           </div>
         </div>
@@ -190,7 +204,7 @@ console.log("Usuários cadastrados nesta semana:", dataUsers);
               onClick={() => setCurrentView('withdrawals')}
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group"
             >
-              <div className="flex items-center space-x-3" onClick={()=>navegate('/withdrawal')}>
+              <div className="flex items-center space-x-3" onClick={() => navegate('/withdrawal')}>
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
                   <CreditCard className="w-5 h-5 text-green-600" />
                 </div>

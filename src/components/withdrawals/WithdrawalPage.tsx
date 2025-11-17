@@ -63,10 +63,10 @@ export default function WithdrawalPage() {
       .reduce((acc: number, item: any) => {
         return acc + Number(item.amount);
       }, 0) || 0;
-       return {
-        panddingAmmount,
-        sucessAmountW
-       }
+    return {
+      panddingAmmount,
+      sucessAmountW
+    }
   }, [myTransations])
   const navegate = useNavigate()
   return (
@@ -76,7 +76,7 @@ export default function WithdrawalPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-4">
-             <ArrowLeft className='cursor-pointer'  onClick={()=>navegate(-1)}/>
+              <ArrowLeft className='cursor-pointer' onClick={() => navegate(-1)} />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Saques</h1>
                 <p className="text-gray-600">Gerencie suas solicitações de saque</p>
@@ -114,7 +114,11 @@ export default function WithdrawalPage() {
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Saldo Disponível</p>
                 <p className="text-3xl font-bold text-green-600 text-[20px]">
-                  {user?.point.value} Kz
+                  {
+                   new Intl.NumberFormat( "pt-AO", 
+                     { style:"currency",  currency:"AOA"}, 
+                   ).format(Number(user?.point?.value))
+                  }
                 </p>                <p className="text-gray-500 text-sm">Disponível para saque</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -127,9 +131,15 @@ export default function WithdrawalPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Saques Pendentes</p>
-                <p className="text-3xl font-bold text-yellow-600 text-[20px]"> {
-                 filter.panddingAmmount
-                } Kz</p>
+                <p className="text-3xl font-bold text-yellow-600 text-[20px]">
+
+                  {
+
+
+                    new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' })
+                      .format(Number(filter.panddingAmmount))
+                  }
+                </p>
                 <p className="text-gray-500 text-sm">Em processamento</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -142,8 +152,13 @@ export default function WithdrawalPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium mb-1">Total Sacado</p>
-                <p className="text-3xl font-bold text-blue-600 text-[20px]">{filter?.sucessAmountW} Kz</p>
-                <p className="text-gray-500 text-sm">Este mês</p>
+                <p className="text-3xl font-bold text-blue-600 text-[20px]">
+                         {
+                   new Intl.NumberFormat( "pt-AO", 
+                     { style:"currency",  currency:"AOA"}, 
+                   ).format(Number(filter.sucessAmountW))
+                  }
+                </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-6 h-6 text-blue-600" />
@@ -163,7 +178,7 @@ export default function WithdrawalPage() {
                 Informações Importantes sobre Levantamentos
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-800">
-              
+
                 <div>
                   <h4 className="font-medium mb-2">Transferência Bancária (via IBAN)</h4>
                   <ul className="space-y-1 text-sm">
@@ -186,7 +201,7 @@ export default function WithdrawalPage() {
 
 
         {/* Withdrawals List */}
-        <TransactionHistory/>
+        <TransactionHistory />
       </main>
 
       {/* Withdrawal Modal */}

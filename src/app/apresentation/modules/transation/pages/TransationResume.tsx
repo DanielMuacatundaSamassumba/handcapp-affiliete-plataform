@@ -51,7 +51,7 @@ export default function TransationResume() {
         {
             title: 'Total de Lucros',
             value: `${formattedValue}`,
-            subtitle: 'Este mês',
+            subtitle: '',
             icon: DollarSign,
             color: 'text-green-600',
             trend: { value: '12%', isPositive: true }
@@ -59,7 +59,7 @@ export default function TransationResume() {
         {
             title: 'Total de Lucros Sacado',
             value: `${formattedValue ?? 0}`,
-            subtitle: 'Este mês',
+            subtitle: '',
             icon: DollarSign,
             color: 'text-green-600',
             trend: { value: '12%', isPositive: true }
@@ -106,13 +106,13 @@ export default function TransationResume() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-4">
                         <div className='flex items-center space-x-4'>
-                            <img src={images.handcappIcon} alt="icon-handcapp" className='w-15 h-20 rounded ' />
+                            <img src={images.handcappIcon} alt="icon-handcapp" className='w-8 rounded  md:w-20 md:h-20 ' />
                             <div>
                                 <div className='flex items-center'>
                                     <ArrowLeft className='text-zinc-400 cursor-pointer' onClick={() => navegate(-1)} />
-                                    <h1 className="text-2xl font-bold text-gray-900">Resumo da Transação</h1>
+                                    <h1 className="text-2xl font-bold text-gray-900 text-[13px] md:text-[17px]">Resumo da Transação</h1>
                                 </div>
-                                <p className="text-gray-600">Bem-vindo de volta, {myData?.name || ""}</p>
+                                <p className="text-gray-600 text-[10px] md:text-[15px]">Bem-vindo de volta, {myData?.name || ""}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4 ">
@@ -186,7 +186,7 @@ export default function TransationResume() {
                         }
                         {
                             transaction.status_id.code == "10" && (
-                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-4/12'>
+                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-6/12'>
                                     <div className=' flex flex-row  items-center justify-center text-white w-24 h-24 rounded-full'>
                                         <img src={images.IconFalied} className='w-full h-full' />
                                     </div>
@@ -220,7 +220,7 @@ export default function TransationResume() {
                         }
                         {
                             transaction.status_id.code == "11" && (
-                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-4/12'>
+                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-6/12'>
                                     <div className=' flex flex-row  items-center justify-center text-white w-24 h-24 rounded-full'>
                                         <img src={images.IconFalied} className='w-full h-full' />
                                     </div>
@@ -254,7 +254,7 @@ export default function TransationResume() {
                         }
                         {
                             transaction.status_id.code == "12" && (
-                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12 md:w-4/12'>
+                                <div className='bg-white shadow-sm mt-5  p-10 flex flex-col items-center justify-center w-11/12  md:w-6/12'>
                                     <div className=' flex flex-row  items-center justify-center text-white w-24 h-24 rounded-full'>
                                         <img src={images.Iconsucess} className='w-full h-full' />
                                     </div>

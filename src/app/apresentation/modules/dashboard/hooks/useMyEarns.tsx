@@ -9,9 +9,8 @@ export default function useMyEarns() {
 
     const list = async () => {
         try {
-            const response = await api.get('user/show/earns/', headersConfig())
+            const response = await api.get('my/earns/all', headersConfig())
             setMyEarns(response.data.data)
-            console.log("all my Data", response.data.data)
         } catch (error) {
             console.error(error)
         }
