@@ -12,6 +12,6 @@ export const external_api = axios.create(
 
 export const external_api_handcapp = axios.create(
       {
-            baseURL: "http://127.0.0.1:8000/api"
+            baseURL: "https://app.batota.ao/api"
       }
 )

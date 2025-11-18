@@ -67,7 +67,7 @@ export default function useLeagueByDate() {
         setGames((prev: any) => {
             return [...prev, {
                 game_id: gameSelected,
-                prognostic: market?.[0].name + "/" + prognsoticSelected?.name,
+                prognostic: market?.[0]?.name + "/" + prognsoticSelected?.name,
                 odd: "0",
                 id: Date.now()
             }];
