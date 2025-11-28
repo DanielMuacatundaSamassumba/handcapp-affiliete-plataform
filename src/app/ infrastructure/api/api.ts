@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-      baseURL: "https://affiliate.api.handicapp.co.ao/api"
+      baseURL: "http://127.0.0.1:8001/api"
 })
 
 export const external_api = axios.create(
@@ -12,6 +12,6 @@ export const external_api = axios.create(
 
 export const external_api_handcapp = axios.create(
       {
-            baseURL: "https://app.batota.ao/api"
+            baseURL: "http://127.0.0.1:8000/api"
       }
 )
